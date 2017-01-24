@@ -18,7 +18,7 @@
 #   Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
 #   reserved.
 
-#   Copyright (C) 2011-2015 University of Waikato, Hamilton, NZ
+#   Copyright (C) 2011-2017 University of Waikato, Hamilton, NZ
 
 BASEDIR=`dirname $0`/..
 BASEDIR=`(cd "$BASEDIR"; pwd)`
@@ -89,11 +89,12 @@ fi
 
 # check options
 MEMORY=512m
-MAIN=nz.ac.waikato.cms.supernova.gui.Supernova
+MAIN=nz.ac.waikato.cms.supernova.Supernova
 
 # launch class
 "$JCMD" \
   -classpath "$CLASSPATH" \
   -Dbasedir="$BASEDIR" \
   -Xmx$MEMORY \
-  $MAIN
+  $MAIN \
+  $@

@@ -16,17 +16,15 @@
 @REM
 
 @REM ----------------------------------------------------------------------------
-@REM Copyright (C) 2011-2015 University of Waikato, Hamilton, NZ
+@REM Copyright (C) 2011-2017 University of Waikato, Hamilton, NZ
 @REM ----------------------------------------------------------------------------
 
 @echo off
 
 set ERROR_CODE=0
 
-@REM Slurp the command line arguments.  This loop allows for an unlimited number
-@REM of arguments (up to the command line limit, anyway).
 set MEMORY=512m
-set MAIN=nz.ac.waikato.cms.supernova.gui.Supernova
+set MAIN=nz.ac.waikato.cms.supernova.Supernova
 set BASEDIR=%~dp0\..
 set JCMD=java
 if not "%JAVA_HOME%"=="" set JCMD="%JAVA_HOME%\bin\java"
@@ -39,7 +37,7 @@ goto endInit
 @REM Reaching here means variables are defined and arguments have been captured
 :endInit
 
-%JCMD% -Xmx%MEMORY% -classpath %CLASSPATH% -Dbasedir="%BASEDIR%" %MAIN%
+%JCMD% -Xmx%MEMORY% -classpath %CLASSPATH% -Dbasedir="%BASEDIR%" %MAIN% %*
 if ERRORLEVEL 1 goto error
 goto end
 
