@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class Calc {
 
-  public static final String EXTROVERSION = "extroversion";
+  public static final String EXTRAVERSION = "extraversion";
 
   public static final String CONSCIENTIOUSNESS = "conscientiousness";
 
