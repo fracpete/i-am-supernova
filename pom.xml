@@ -42,6 +42,14 @@
     </developer>
   </developers>
 
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.argparse4j</groupId>
+      <artifactId>argparse4j</artifactId>
+      <version>0.6.0</version>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <profile>
       <id>release-sign-artifacts</id>
