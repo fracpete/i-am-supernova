@@ -42,21 +42,6 @@
     </developer>
   </developers>
 
-  <dependencies>
-    <dependency>
-      <groupId>de.intarsys.opensource</groupId>
-      <artifactId>jPodRenderer</artifactId>
-      <version>5.5.1</version>
-      <type>jar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.waikato</groupId>
-      <artifactId>fcms-widgets</artifactId>
-      <version>0.0.3</version>
-    </dependency>
-  </dependencies>
-
   <profiles>
     <profile>
       <id>release-sign-artifacts</id>
