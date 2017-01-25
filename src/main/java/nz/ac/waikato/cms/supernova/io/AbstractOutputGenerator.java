@@ -192,7 +192,7 @@ public abstract class AbstractOutputGenerator {
   /**
    * Generates the output.
    *
-   * @param test		the test results
+   * @param test		the test results (measure - [score, percentile])
    * @param angle		the angle to use
    * @param numFlips		the number of flips
    * @param overallFlipCycles	the overall flip cycles
@@ -204,7 +204,7 @@ public abstract class AbstractOutputGenerator {
   /**
    * Generates the output.
    *
-   * @param test		the test results
+   * @param test		the test results (measure - [score, percentile])
    * @param output		the file to save the result in
    * @return			null if successfully generated, otherwise error message
    */

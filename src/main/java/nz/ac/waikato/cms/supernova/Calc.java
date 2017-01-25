@@ -53,27 +53,27 @@ public class Calc {
   /**
    * Calculates the angle.
    *
-   * @param params	the test results
+   * @param test	the test results (measure - [score, percentile])
    * @return		the angle
    */
-  public static double calcAngle(Map<String, List<Double>> params) {
+  public static double calcAngle(Map<String, List<Double>> test) {
     double result = 0;
-    for (String key: params.keySet())
-      result += params.get(key).get(1) / 5.0;
+    for (String key: test.keySet())
+      result += test.get(key).get(1) / 5.0;
     return result;
   }
 
   /**
    * Calculates the number of flips for each test result.
    *
-   * @param params	the test results
+   * @param test	the test results (measure - [score, percentile])
    * @return		the number of flips
    */
-  public static Map<String, Integer> calcNumFlips(Map<String, List<Double>> params) {
+  public static Map<String, Integer> calcNumFlips(Map<String, List<Double>> test) {
     Map<String,Integer> result = new HashMap<>();
-    for (String key: params.keySet()) {
+    for (String key: test.keySet()) {
       int flips;
-      double percentile = params.get(key).get(1);
+      double percentile = test.get(key).get(1);
       if (percentile <= 19.0)
 	flips = 1;
       else if (percentile <= 39)
@@ -92,13 +92,13 @@ public class Calc {
   /**
    * Calculates the overall flip cycles.
    *
-   * @param params	the test results
+   * @param test	the test results (measure - [score, percentile])
    * @return		the cycles
    */
-  public static double calcOverallFlipCycles(Map<String, List<Double>> params) {
+  public static double calcOverallFlipCycles(Map<String, List<Double>> test) {
     double result = 0.0;
-    for (String key: params.keySet())
-      result += params.get(key).get(0);
+    for (String key: test.keySet())
+      result += test.get(key).get(0);
     result = Math.round(result);
     return result;
   }
