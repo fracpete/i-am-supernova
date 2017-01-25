@@ -76,6 +76,7 @@ public class PNG
     pNew[0] = p[0] - tc[0];
     pNew[1] = p[1] - tc[1];
     // rotate point
+    // https://en.wikipedia.org/wiki/Rotation_(mathematics)#Two_dimensions
     pRot    = new double[2];
     rad     = Math.toRadians(angle);
     pRot[0] = pNew[0]*Math.cos(rad) - pNew[1]*Math.sin(rad);
@@ -110,11 +111,12 @@ public class PNG
     int			flip;
     int			w;
     int			h;
+    int			m;
+    String 		measure;
     double[]		tc;
     double[]		a;
     double[]		b;
     double[]		c;
-    double[]		ic;
     double		currentAngle;
 
     img = new BufferedImage(m_Width, m_Height, BufferedImage.TYPE_INT_ARGB);
@@ -127,12 +129,12 @@ public class PNG
     // center of image
     cx = m_Width / 2;
     cy = m_Height / 2;
-    ic = new double[]{cx, cy};
 
     // draw triangles
-    for (String measure: Calc.MEASURES) {
+    for (m = 0; m < Calc.MEASURES.length; m++) {
+      measure = Calc.MEASURES[m];
       g.setColor(adjustOpacity(m_Colors.get(measure)));
-      currentAngle = 0.0;
+      currentAngle = angle * m;
       w = (int) Math.round(m_Width * (1.0 - 2*m_Margin) * (test.get(measure).get(0) / (5.0 * 2)));  // score (1 score unit = 10 percentile units)
       h = (int) Math.round(m_Height * (1.0 - 2*m_Margin) * (test.get(measure).get(1) / 100.0));  // percentile
       if (m_Verbose)
