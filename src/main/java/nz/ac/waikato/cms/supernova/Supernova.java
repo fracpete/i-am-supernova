@@ -80,12 +80,12 @@ public class Supernova {
       .metavar(Calc.OPENNESS + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.OPENNESS + "'.");
+      .help("The score for '" + Calc.OPENNESS + "' (0-5).");
     parser.addArgument("--" + Calc.OPENNESS + PERCENTILE_SUFFIX)
       .metavar(Calc.OPENNESS + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.OPENNESS + "'.");
+      .help("The percentile for '" + Calc.OPENNESS + "' (0-100).");
     parser.addArgument("--" + Calc.OPENNESS + COLOR_SUFFIX)
       .metavar(Calc.OPENNESS + COLOR_SUFFIX)
       .type(String.class)
@@ -97,12 +97,12 @@ public class Supernova {
       .metavar(Calc.EXTRAVERSION + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.EXTRAVERSION + "'.");
+      .help("The score for '" + Calc.EXTRAVERSION + "' (0-5).");
     parser.addArgument("--" + Calc.EXTRAVERSION + PERCENTILE_SUFFIX)
       .metavar(Calc.EXTRAVERSION + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.EXTRAVERSION + "'.");
+      .help("The percentile for '" + Calc.EXTRAVERSION + "' (0-100).");
     parser.addArgument("--" + Calc.EXTRAVERSION + COLOR_SUFFIX)
       .metavar(Calc.EXTRAVERSION + COLOR_SUFFIX)
       .type(String.class)
@@ -114,12 +114,12 @@ public class Supernova {
       .metavar(Calc.AGREEABLENESS + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.AGREEABLENESS + "'.");
+      .help("The score for '" + Calc.AGREEABLENESS + "' (0-5).");
     parser.addArgument("--" + Calc.AGREEABLENESS + PERCENTILE_SUFFIX)
       .metavar(Calc.AGREEABLENESS + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.AGREEABLENESS + "'.");
+      .help("The percentile for '" + Calc.AGREEABLENESS + "' (0-100).");
     parser.addArgument("--" + Calc.AGREEABLENESS + COLOR_SUFFIX)
       .metavar(Calc.AGREEABLENESS + COLOR_SUFFIX)
       .type(String.class)
@@ -131,12 +131,12 @@ public class Supernova {
       .metavar(Calc.CONSCIENTIOUSNESS + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.CONSCIENTIOUSNESS + "'.");
+      .help("The score for '" + Calc.CONSCIENTIOUSNESS + "' (0-5).");
     parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
       .metavar(Calc.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.CONSCIENTIOUSNESS + "'.");
+      .help("The percentile for '" + Calc.CONSCIENTIOUSNESS + "' (0-100).");
     parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
       .metavar(Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
       .type(String.class)
@@ -148,12 +148,12 @@ public class Supernova {
       .metavar(Calc.NEUROTICISM + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.NEUROTICISM + "'.");
+      .help("The score for '" + Calc.NEUROTICISM + "' (0-5).");
     parser.addArgument("--" + Calc.NEUROTICISM + PERCENTILE_SUFFIX)
       .metavar(Calc.NEUROTICISM + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.NEUROTICISM + "'.");
+      .help("The percentile for '" + Calc.NEUROTICISM + "' (0-100).");
     parser.addArgument("--" + Calc.NEUROTICISM + COLOR_SUFFIX)
       .metavar(Calc.NEUROTICISM + COLOR_SUFFIX)
       .type(String.class)
