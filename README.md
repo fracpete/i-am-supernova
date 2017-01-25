@@ -11,7 +11,7 @@ Currently available output formats:
 
 ## Example usage (single output) ##
 Use either the `run` (Linux/Mac) or `run.bat` (Windows) script to execute
-the class for generating a single graphical output.
+the class for generating a single plot.
 
 ```bash
 run \
@@ -33,8 +33,9 @@ run \
 
 ## Example usage (multiple outputs) ##
 Use either the `csv` (Linux/Mac) or `csv.bat` (Windows) script to execute
-the class for generating a graphical output based on a CSV file. The generated
-output files get stored in the specified output directory.
+the class for generating plots based on parameters stored in a CSV file. 
+The generated output files get stored in the specified output directory, 
+using the `ID` as the file name.
 
 ```bash
 csv \
