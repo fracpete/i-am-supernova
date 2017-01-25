@@ -42,6 +42,14 @@ public class Calc {
 
   public static final String OPENNESS = "openness";
 
+  public static final String[] MEASURES = new String[]{
+    OPENNESS,
+    EXTRAVERSION,
+    AGREEABLENESS,
+    CONSCIENTIOUSNESS,
+    NEUROTICISM
+  };
+
   /**
    * Calculates the angle.
    *
