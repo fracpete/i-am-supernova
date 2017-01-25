@@ -265,5 +265,11 @@ public class SupernovaCSV {
       double percentile = Double.parseDouble(rec.get(colPercentile));
       test.put(measure, new ArrayList<>(Arrays.asList(new Double[]{score, percentile})));
     }
+    if (!test.isEmpty()) {
+      File outfile = new File(outdir + File.separator + oldID + "." + generator.getExtension());
+      String msg = generator.generate(test, outfile);
+      if (msg != null)
+	System.err.println("Failed to generate output for ID: " + oldID);
+    }
   }
 }
