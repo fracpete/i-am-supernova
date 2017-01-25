@@ -88,7 +88,7 @@ public class Supernova {
       .metavar(Calc.OPENNESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.OPENNESS + "'.");
+      .help("The color for '" + Calc.OPENNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.ORANGE) + ").");
 
     // extraversion
     parser.addArgument("--" + Calc.EXTRAVERSION + SCORE_SUFFIX)
@@ -104,8 +104,8 @@ public class Supernova {
     parser.addArgument("--" + Calc.EXTRAVERSION + COLOR_SUFFIX)
       .metavar(Calc.EXTRAVERSION + COLOR_SUFFIX)
       .type(String.class)
-      .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.EXTRAVERSION + "'.");
+      .setDefault(ColorHelper.toHex(Color.YELLOW))
+      .help("The color for '" + Calc.EXTRAVERSION + "' in hex format (e.g., " + ColorHelper.toHex(Color.YELLOW) + ").");
 
     // agreeablenes
     parser.addArgument("--" + Calc.AGREEABLENESS + SCORE_SUFFIX)
@@ -121,8 +121,8 @@ public class Supernova {
     parser.addArgument("--" + Calc.AGREEABLENESS + COLOR_SUFFIX)
       .metavar(Calc.AGREEABLENESS + COLOR_SUFFIX)
       .type(String.class)
-      .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.AGREEABLENESS + "'.");
+      .setDefault(ColorHelper.toHex(Color.GREEN))
+      .help("The color for '" + Calc.AGREEABLENESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.GREEN) + ").");
 
     // conscientiousness
     parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + SCORE_SUFFIX)
@@ -138,8 +138,8 @@ public class Supernova {
     parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
       .metavar(Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
       .type(String.class)
-      .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.CONSCIENTIOUSNESS + "'.");
+      .setDefault(ColorHelper.toHex(Color.BLUE))
+      .help("The color for '" + Calc.CONSCIENTIOUSNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.BLUE) + ").");
 
     // neuroticism
     parser.addArgument("--" + Calc.NEUROTICISM + SCORE_SUFFIX)
@@ -155,8 +155,8 @@ public class Supernova {
     parser.addArgument("--" + Calc.NEUROTICISM + COLOR_SUFFIX)
       .metavar(Calc.NEUROTICISM + COLOR_SUFFIX)
       .type(String.class)
-      .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.NEUROTICISM + "'.");
+      .setDefault(ColorHelper.toHex(Color.RED))
+      .help("The color for '" + Calc.NEUROTICISM + "' in hex format (e.g., " + ColorHelper.toHex(Color.RED) + ").");
 
     // other parameters
     parser.addArgument("--" + BACKGROUND)
