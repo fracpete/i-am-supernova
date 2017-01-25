@@ -39,6 +39,15 @@ public class PNG
   extends AbstractPixelBasedOutputGenerator {
 
   /**
+   * Returns the default extension to use.
+   *
+   * @return		the extension (excluding dot)
+   */
+  public String getExtension() {
+    return "png";
+  }
+
+  /**
    * Adjusts the y value.
    *
    * @param y		the y to adjust

@@ -190,6 +190,13 @@ public abstract class AbstractOutputGenerator {
   }
 
   /**
+   * Returns the default extension to use.
+   *
+   * @return		the extension (excluding dot)
+   */
+  public abstract String getExtension();
+
+  /**
    * Generates the output.
    *
    * @param test		the test results (measure - [score, percentile])
