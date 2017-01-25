@@ -64,6 +64,8 @@ public class Supernova {
 
   public static final String GENERATOR = "generator";
 
+  public static final String MARGIN = "margin";
+
   public static void main(String[] args) throws Exception {
     ArgumentParser parser;
 
@@ -171,6 +173,12 @@ public class Supernova {
       .setDefault(0.1)
       .help("The opacity (0-1).");
 
+    parser.addArgument("--" + MARGIN)
+      .metavar(MARGIN)
+      .type(Double.class)
+      .setDefault(0.1)
+      .help("The margin in the output (0-1).");
+
     parser.addArgument("--" + WIDTH)
       .metavar(WIDTH)
       .type(Integer.class)
@@ -248,6 +256,7 @@ public class Supernova {
     generator.setColors(colors);
     generator.setBackground(ColorHelper.valueOf(namespace.getString(BACKGROUND), Color.BLACK));
     generator.setOpacity(namespace.getDouble(OPACITY));
+    generator.setMargin(namespace.getDouble(MARGIN));
     if (generator instanceof AbstractPixelBasedOutputGenerator) {
       AbstractPixelBasedOutputGenerator pixel = (AbstractPixelBasedOutputGenerator) generator;
       pixel.setWidth(namespace.getInt(WIDTH));

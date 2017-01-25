@@ -53,6 +53,9 @@ public abstract class AbstractOutputGenerator {
   /** the opacity (0-1). */
   protected double m_Opacity;
 
+  /** the margin (0-1). */
+  protected double m_Margin;
+
   /**
    * Default constructor.
    *
@@ -69,6 +72,7 @@ public abstract class AbstractOutputGenerator {
     m_Logger     = Logger.getLogger(getClass().getName());
     m_Verbose    = false;
     m_Opacity    = 0.1;
+    m_Margin     = 0.1;
     m_Background = Color.BLACK;
     m_Colors     = new HashMap<>();
     m_Colors.put(Calc.OPENNESS,          Color.ORANGE);
@@ -152,6 +156,40 @@ public abstract class AbstractOutputGenerator {
   }
 
   /**
+   * Sets the margin.
+   *
+   * @param value	the margin (0-1)
+   */
+  public void setMargin(double value) {
+    if ((value >= 0) && (value <= 1.0))
+      m_Margin = value;
+  }
+
+  /**
+   * Returns the margin.
+   *
+   * @return		the margin (0-1)
+   */
+  public double getMargin() {
+    return m_Margin;
+  }
+
+  /**
+   * Adjusts the alpha value of the color using the current opacity.
+   *
+   * @param color	the color to adjust
+   * @return		the adjusted color
+   */
+  protected Color adjustOpacity(Color color) {
+    return new Color(
+      color.getRed(),
+      color.getGreen(),
+      color.getBlue(),
+      (int) Math.round(255 * m_Opacity)
+    );
+  }
+
+  /**
    * Generates the output.
    *
    * @param test		the test results
@@ -178,6 +216,7 @@ public abstract class AbstractOutputGenerator {
       m_Logger.info("Colors: " + colorsStr);
       m_Logger.info("Background: " + ColorHelper.toHex(m_Background));
       m_Logger.info("Opacity: " + m_Opacity);
+      m_Logger.info("Margin: " + m_Margin);
       m_Logger.info("Test: " + test);
     }
 
