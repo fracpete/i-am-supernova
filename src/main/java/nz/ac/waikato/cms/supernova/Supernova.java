@@ -251,7 +251,10 @@ public class Supernova {
 
     File outfile = new File(namespace.getString(OUTPUT));
 
-    AbstractOutputGenerator generator = (AbstractOutputGenerator) Class.forName(namespace.getString(GENERATOR)).newInstance();
+    String generatorCls = namespace.getString(GENERATOR);
+    if (!generatorCls.contains("."))
+      generatorCls = AbstractOutputGenerator.class.getPackage().getName() + "." + generatorCls;
+    AbstractOutputGenerator generator = (AbstractOutputGenerator) Class.forName(generatorCls).newInstance();
     generator.setVerbose(namespace.getBoolean(VERBOSE));
     generator.setColors(colors);
     generator.setBackground(ColorHelper.valueOf(namespace.getString(BACKGROUND), Color.BLACK));

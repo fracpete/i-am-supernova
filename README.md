@@ -3,6 +3,12 @@
 *I am supernova* is an artistic visualization of *The Big Five Personality Test*, 
 devised by [Keith Soo](http://www.cms.waikato.ac.nz/people/ceks).
 
+## Output formats
+Currently available output formats:
+
+* PNG
+
+
 ## Example usage (single output) ##
 Use either the `run` (Linux/Mac) or `run.bat` (Windows) script to execute
 the class for generating a single graphical output.
@@ -20,7 +26,7 @@ run \
   --neuroticism_score 2.4 \
   --neuroticism_percentile 25 \
   --opacity 0.1 \
-  --generator nz.ac.waikato.cms.supernova.io.PNG \
+  --generator PNG \
   --output example.png
 ```
 
@@ -34,7 +40,7 @@ output files get stored in the specified output directory.
 csv \
   --csv data.csv \
   --opacity 0.1 \
-  --generator nz.ac.waikato.cms.supernova.io.PNG \
+  --generator PNG \
   --output outdir
 ```
 
