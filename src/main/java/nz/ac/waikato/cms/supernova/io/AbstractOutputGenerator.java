@@ -172,6 +172,10 @@ public abstract class AbstractOutputGenerator {
    */
   public String generate(Map<String,List<Double>> test, File output) {
     if (m_Verbose) {
+      Map<String,String> colorsStr = new HashMap<>();
+      for (String key: m_Colors.keySet())
+	colorsStr.put(key, ColorHelper.toHex(m_Colors.get(key)));
+      m_Logger.info("Colors: " + colorsStr);
       m_Logger.info("Background: " + ColorHelper.toHex(m_Background));
       m_Logger.info("Opacity: " + m_Opacity);
       m_Logger.info("Test: " + test);
