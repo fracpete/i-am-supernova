@@ -3,9 +3,9 @@
 *I am supernova* is an artistic visualization of *The Big Five Personality Test*, 
 devised by [Keith Soo](http://www.cms.waikato.ac.nz/people/ceks).
 
-## Example usage ##
+## Example usage (single output) ##
 Use either the `run` (Linux/Mac) or `run.bat` (Windows) script to execute
-class for generating graphical output.
+the class for generating a single graphical output.
 
 ```bash
 run \
@@ -24,51 +24,32 @@ run \
   --output example.png
 ```
 
-## Parameters
+
+## Example usage (multiple outputs) ##
+Use either the `csv` (Linux/Mac) or `csv.bat` (Windows) script to execute
+the class for generating a graphical output based on a CSV file. The generated
+output files get stored in the specified output directory.
+
+```bash
+csv \
+  --csv data.csv \
+  --opacity 0.1 \
+  --generator nz.ac.waikato.cms.supernova.io.PNG \
+  --output outdir
 ```
-  -h, --help             show this help message and exit
-  --openness_score openness_score
-                         The score for 'openness' (0-5).
-  --openness_percentile openness_percentile
-                         The percentile for 'openness' (0-100).
-  --openness_color openness_color
-                         The color  for  'openness'  in  hex  format (e.g.,
-                         #ffc800).
-  --extraversion_score extraversion_score
-                         The score for 'extraversion' (0-5).
-  --extraversion_percentile extraversion_percentile
-                         The percentile for 'extraversion' (0-100).
-  --extraversion_color extraversion_color
-                         The color for 'extraversion'  in hex format (e.g.,
-                         #ffff00).
-  --agreeableness_score agreeableness_score
-                         The score for 'agreeableness' (0-5).
-  --agreeableness_percentile agreeableness_percentile
-                         The percentile for 'agreeableness' (0-100).
-  --agreeableness_color agreeableness_color
-                         The color for  'agreeableness'  in  hex format (e.
-                         g., #00ff00).
-  --conscientiousness_score conscientiousness_score
-                         The score for 'conscientiousness' (0-5).
-  --conscientiousness_percentile conscientiousness_percentile
-                         The percentile for 'conscientiousness' (0-100).
-  --conscientiousness_color conscientiousness_color
-                         The color for  'conscientiousness'  in  hex format
-                         (e.g., #0000ff).
-  --neuroticism_score neuroticism_score
-                         The score for 'neuroticism' (0-5).
-  --neuroticism_percentile neuroticism_percentile
-                         The percentile for 'neuroticism' (0-100).
-  --neuroticism_color neuroticism_color
-                         The color for 'neuroticism'  in  hex format (e.g.,
-                         #ff0000).
-  --background background
-                         The background color.
-  --opacity opacity      The opacity (0-1).
-  --margin margin        The margin in the output (0-1).
-  --width width          The width of the output.
-  --height height        The height of the output.
-  --generator generator  The name of the generator class to use.
-  --output output        The output file to generate.
-  --verbose              Whether to output logging information.
+
+Example data file:
+
+```csv
+ID,measure,score,percentile
+me,extraversion,2.2,18
+me,conscientiousness,3.5,52
+me,neuroticism,2.4,25
+me,agreeableness,4.2,63
+me,openness,4.3,59
+you,extraversion,3.2,32
+you,conscientiousness,2.5,32
+you,neuroticism,2.7,31
+you,agreeableness,4.9,89
+you,openness,2.1,23
 ```

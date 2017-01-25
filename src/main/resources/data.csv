@@ -1,0 +1,12 @@
+ID,measure,score,percentile
+me,extraversion,2.2,18
+me,conscientiousness,3.5,52
+me,neuroticism,2.4,25
+me,agreeableness,4.2,63
+me,openness,4.3,59
+you,extraversion,3.2,32
+you,conscientiousness,2.5,32
+you,neuroticism,2.7,31
+you,agreeableness,4.9,89
+you,openness,2.1,23
+
