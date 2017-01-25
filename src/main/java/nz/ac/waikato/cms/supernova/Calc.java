@@ -102,4 +102,56 @@ public class Calc {
     result = Math.round(result);
     return result;
   }
+
+  /**
+   * Calculates the incenter coordinates of the triangle.
+   * https://en.wikipedia.org/wiki/Incenter
+   *
+   * @param w		the width of the triangle
+   * @param h		the height of the triangle
+   * @return		the x/y coordinates of the center
+   */
+  public static double[] incenter(double w, double h) {
+    double	a;
+    double	b;
+    double	c;
+    double	xa;
+    double	ya;
+    double	xb;
+    double	yb;
+    double	xc;
+    double	yc;
+
+    /*
+      https://en.wikipedia.org/wiki/Incenter#Cartesian_coordinates
+
+      y:percentile/h  ^
+		      |    b
+		      | -------
+		      | \     |
+		      |  \    |
+		      |   \   | a
+		      | c  \  |
+		      |     \ |
+		      |      \|
+		      +-----------> x:score/w
+
+     */
+
+    a = h;
+    b = w;
+    c = Math.sqrt(a*a + b*b);
+
+    xa = 0;
+    ya = h;
+    xb = w;
+    yb = 0;
+    xc = w;
+    yc = h;
+
+    return new double[]{
+      (a*xa + b*xb + c*xc) / (a + b + c),
+      (a*ya + b*yb + c*yc) / (a + b + c),
+    };
+  }
 }
