@@ -28,38 +28,44 @@ run \
 ```
   -h, --help             show this help message and exit
   --openness_score openness_score
-                         The score for 'openness'.
+                         The score for 'openness' (0-5).
   --openness_percentile openness_percentile
-                         The percentile for 'openness'.
+                         The percentile for 'openness' (0-100).
   --openness_color openness_color
-                         The color for 'openness' in hex format (e.g., #ffc800).
+                         The color  for  'openness'  in  hex  format (e.g.,
+                         #ffc800).
   --extraversion_score extraversion_score
-                         The score for 'extraversion'.
+                         The score for 'extraversion' (0-5).
   --extraversion_percentile extraversion_percentile
-                         The percentile for 'extraversion'.
+                         The percentile for 'extraversion' (0-100).
   --extraversion_color extraversion_color
-                         The color for 'extraversion' in hex format (e.g., #ffff00).
+                         The color for 'extraversion'  in hex format (e.g.,
+                         #ffff00).
   --agreeableness_score agreeableness_score
-                         The score for 'agreeableness'.
+                         The score for 'agreeableness' (0-5).
   --agreeableness_percentile agreeableness_percentile
-                         The percentile for 'agreeableness'.
+                         The percentile for 'agreeableness' (0-100).
   --agreeableness_color agreeableness_color
-                         The color for  'agreeableness' in hex format (e.g., #00ff00).
+                         The color for  'agreeableness'  in  hex format (e.
+                         g., #00ff00).
   --conscientiousness_score conscientiousness_score
-                         The score for 'conscientiousness'.
+                         The score for 'conscientiousness' (0-5).
   --conscientiousness_percentile conscientiousness_percentile
-                         The percentile for 'conscientiousness'.
+                         The percentile for 'conscientiousness' (0-100).
   --conscientiousness_color conscientiousness_color
-                         The color for 'conscientiousness' in hex format (e.g., #0000ff).
+                         The color for  'conscientiousness'  in  hex format
+                         (e.g., #0000ff).
   --neuroticism_score neuroticism_score
-                         The score for 'neuroticism'.
+                         The score for 'neuroticism' (0-5).
   --neuroticism_percentile neuroticism_percentile
-                         The percentile for 'neuroticism'.
+                         The percentile for 'neuroticism' (0-100).
   --neuroticism_color neuroticism_color
-                         The color for 'neuroticism' in hex format (e.g., #ff0000).
+                         The color for 'neuroticism'  in  hex format (e.g.,
+                         #ff0000).
   --background background
                          The background color.
   --opacity opacity      The opacity (0-1).
+  --margin margin        The margin in the output (0-1).
   --width width          The width of the output.
   --height height        The height of the output.
   --generator generator  The name of the generator class to use.
