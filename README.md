@@ -19,6 +19,8 @@ run \
   --conscientiousness_percentile 52 \
   --neuroticism_score 2.4 \
   --neuroticism_percentile 25 \
+  --opacity 0.1 \
+  --generator nz.ac.waikato.cms.supernova.io.PNG \
   --output example.png
 ```
 
