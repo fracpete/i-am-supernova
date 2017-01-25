@@ -9,3 +9,8 @@ you,conscientiousness,2.5,32
 you,neuroticism,2.7,31
 you,agreeableness,4.9,89
 you,openness,2.1,23
+test,extraversion,1.0,20
+test,conscientiousness,2.0,40
+test,neuroticism,3.0,60
+test,agreeableness,4.0,80
+test,openness,5.0,100
