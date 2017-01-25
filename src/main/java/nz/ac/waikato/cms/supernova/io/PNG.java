@@ -49,6 +49,37 @@ public class PNG
   }
 
   /**
+   * Rotates the triangle point around the center of the triangle.
+   *
+   * @param p		the point of the triangle to rotate
+   * @param tc 		the triangle center
+   * @param angle	the angle to rotate counterclockwise (in degree)
+   * @return		the rotated point (y unadjusted!)
+   */
+  protected double[] rotate(double[] p, double[] tc, double angle) {
+    double[] 	pNew;
+    double[] 	pRot;
+    double	rad;
+    double[]	pFin;
+
+    pNew    = new double[2];
+    // move origin from triangle into (0,0)
+    pNew[0] = p[0] - tc[0];
+    pNew[1] = p[1] - tc[1];
+    // rotate point
+    pRot    = new double[2];
+    rad     = Math.toRadians(angle);
+    pRot[0] = pNew[0]*Math.cos(rad) - pNew[1]*Math.sin(rad);
+    pRot[1] = pNew[0]*Math.sin(rad) + pNew[1]*Math.cos(rad);
+    // move origin back into triangle center
+    pFin    = new double[2];
+    pFin[0] = pRot[0] + tc[0];
+    pFin[1] = pRot[1] + tc[1];
+
+    return pFin;
+  }
+
+  /**
    * Generates the output.
    *
    * @param test		the test results (measure - [score, percentile])
@@ -71,6 +102,10 @@ public class PNG
     int			w;
     int			h;
     double[]		tc;
+    double[]		a;
+    double[]		b;
+    double[]		c;
+    double[]		ic;
     double		currentAngle;
 
     img = new BufferedImage(m_Width, m_Height, BufferedImage.TYPE_INT_ARGB);
@@ -83,6 +118,7 @@ public class PNG
     // center of image
     cx = m_Width / 2;
     cy = m_Height / 2;
+    ic = new double[]{cx, cy};
 
     // draw triangles
     for (String measure: Calc.MEASURES) {
@@ -99,12 +135,15 @@ public class PNG
 	for (flip = 0; flip < numFlips.get(measure); flip++) {
 	  dx = (int) (cx - tc[0]);
 	  dy = (int) (cy - tc[1]);
-	  g.rotate(currentAngle / 360.0 * 2 * Math.PI);
-	  g.fillPolygon(new int[]{w, w, 0}, new int[]{adjustY(0), adjustY(h), adjustY(h)}, 3);
+	  a  = rotate(new double[]{0, h}, tc, currentAngle);
+	  b  = rotate(new double[]{w, 0}, tc, currentAngle);
+	  c  = rotate(new double[]{w, h}, tc, currentAngle);
+	  g.fillPolygon(
+	    new int[]{(int) a[0] + dx, (int) b[0] + dx, (int) c[0] + dx},
+	    new int[]{adjustY((int) a[1] + dy), adjustY((int) b[1] + dy), adjustY((int) c[1] + dy)},
+	    3);
 	  currentAngle += angle;
-	  break;
 	}
-	break;
       }
     }
 
