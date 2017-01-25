@@ -176,7 +176,7 @@ public class Supernova {
     parser.addArgument("--" + MARGIN)
       .metavar(MARGIN)
       .type(Double.class)
-      .setDefault(0.1)
+      .setDefault(0.2)
       .help("The margin in the output (0-1).");
 
     parser.addArgument("--" + WIDTH)
