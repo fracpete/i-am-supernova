@@ -20,8 +20,6 @@
 
 package nz.ac.waikato.cms.supernova.io;
 
-import nz.ac.waikato.cms.supernova.Calc;
-
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -131,15 +129,15 @@ public class PNG
     cy = m_Height / 2;
 
     // draw triangles
-    for (m = 0; m < Calc.MEASURES.length; m++) {
-      measure = Calc.MEASURES[m];
+    for (m = 0; m < MEASURES.length; m++) {
+      measure = MEASURES[m];
       g.setColor(adjustOpacity(m_Colors.get(measure)));
       currentAngle = angle * m;
       w = (int) Math.round(m_Width * (1.0 - 2*m_Margin) * (test.get(measure).get(0) / (5.0 * 2)));  // score (1 score unit = 10 percentile units)
       h = (int) Math.round(m_Height * (1.0 - 2*m_Margin) * (test.get(measure).get(1) / 100.0));  // percentile
       if (m_Verbose)
 	m_Logger.info(measure + " - triangle dimensions: w=" + w + ", h=" + h);
-      tc = Calc.incenter(w, h);
+      tc = m_Center.calculate(w, h);
       if (m_Verbose)
 	m_Logger.info(measure + " - triangle center: " + tc[0] + "/" + tc[1]);
       for (cycle = 0; cycle < overallFlipCycles; cycle++) {

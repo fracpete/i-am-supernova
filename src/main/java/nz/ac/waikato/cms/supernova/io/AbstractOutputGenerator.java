@@ -20,8 +20,9 @@
 
 package nz.ac.waikato.cms.supernova.io;
 
-import nz.ac.waikato.cms.supernova.Calc;
 import nz.ac.waikato.cms.supernova.ColorHelper;
+import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
+import nz.ac.waikato.cms.supernova.triangle.Incenter;
 
 import java.awt.Color;
 import java.io.File;
@@ -37,6 +38,24 @@ import java.util.logging.Logger;
  * @version $Revision$
  */
 public abstract class AbstractOutputGenerator {
+
+  public static final String EXTRAVERSION = "extraversion";
+
+  public static final String CONSCIENTIOUSNESS = "conscientiousness";
+
+  public static final String NEUROTICISM = "neuroticism";
+
+  public static final String AGREEABLENESS = "agreeableness";
+
+  public static final String OPENNESS = "openness";
+
+  public static final String[] MEASURES = new String[]{
+    OPENNESS,
+    EXTRAVERSION,
+    AGREEABLENESS,
+    CONSCIENTIOUSNESS,
+    NEUROTICISM
+  };
 
   /** for logging. */
   protected Logger m_Logger;
@@ -56,6 +75,9 @@ public abstract class AbstractOutputGenerator {
   /** the margin (0-1). */
   protected double m_Margin;
 
+  /** the triangle center algorithm. */
+  protected AbstractTriangleCenterCalculation m_Center;
+
   /**
    * Default constructor.
    *
@@ -74,12 +96,13 @@ public abstract class AbstractOutputGenerator {
     m_Opacity    = 0.1;
     m_Margin     = 0.1;
     m_Background = Color.BLACK;
+    m_Center     = new Incenter();
     m_Colors     = new HashMap<>();
-    m_Colors.put(Calc.OPENNESS,          Color.ORANGE);
-    m_Colors.put(Calc.EXTRAVERSION,      Color.YELLOW);
-    m_Colors.put(Calc.AGREEABLENESS,     Color.GREEN);
-    m_Colors.put(Calc.CONSCIENTIOUSNESS, Color.BLUE);
-    m_Colors.put(Calc.NEUROTICISM,       Color.RED);
+    m_Colors.put(OPENNESS,          Color.ORANGE);
+    m_Colors.put(EXTRAVERSION,      Color.YELLOW);
+    m_Colors.put(AGREEABLENESS,     Color.GREEN);
+    m_Colors.put(CONSCIENTIOUSNESS, Color.BLUE);
+    m_Colors.put(NEUROTICISM,       Color.RED);
   }
 
   /**
@@ -175,6 +198,24 @@ public abstract class AbstractOutputGenerator {
   }
 
   /**
+   * Sets the algorithm for calculating the center of a triangle.
+   *
+   * @param value	the algorithm
+   */
+  public void setCenter(AbstractTriangleCenterCalculation value) {
+    m_Center = value;
+  }
+
+  /**
+   * Returns the algorithm for calculating the center of a triangle.
+   *
+   * @return		the algorithm
+   */
+  public AbstractTriangleCenterCalculation getCenter() {
+    return m_Center;
+  }
+
+  /**
    * Adjusts the alpha value of the color using the current opacity.
    *
    * @param color	the color to adjust
@@ -187,6 +228,59 @@ public abstract class AbstractOutputGenerator {
       color.getBlue(),
       (int) Math.round(255 * m_Opacity)
     );
+  }
+
+  /**
+   * Calculates the angle.
+   *
+   * @param test	the test results (measure - [score, percentile])
+   * @return		the angle
+   */
+  protected double calcAngle(Map<String, List<Double>> test) {
+    double result = 0;
+    for (String key: test.keySet())
+      result += test.get(key).get(1) / 5.0;
+    return result;
+  }
+
+  /**
+   * Calculates the number of flips for each test result.
+   *
+   * @param test	the test results (measure - [score, percentile])
+   * @return		the number of flips
+   */
+  protected Map<String, Integer> calcNumFlips(Map<String, List<Double>> test) {
+    Map<String,Integer> result = new HashMap<>();
+    for (String key: test.keySet()) {
+      int flips;
+      double percentile = test.get(key).get(1);
+      if (percentile <= 19.0)
+	flips = 1;
+      else if (percentile <= 39)
+	flips = 2;
+      else if (percentile <= 59)
+	flips = 3;
+      else if (percentile <= 79)
+	flips = 4;
+      else
+	flips = 5;
+      result.put(key, flips);
+    }
+    return result;
+  }
+
+  /**
+   * Calculates the overall flip cycles.
+   *
+   * @param test	the test results (measure - [score, percentile])
+   * @return		the cycles
+   */
+  protected double calcOverallFlipCycles(Map<String, List<Double>> test) {
+    double result = 0.0;
+    for (String key: test.keySet())
+      result += test.get(key).get(0);
+    result = Math.round(result);
+    return result;
   }
 
   /**
@@ -227,15 +321,15 @@ public abstract class AbstractOutputGenerator {
       m_Logger.info("Test: " + test);
     }
 
-    double angle = Calc.calcAngle(test);
+    double angle = calcAngle(test);
     if (m_Verbose)
       m_Logger.info("angle: " + angle);
 
-    Map<String, Integer> numFlips = Calc.calcNumFlips(test);
+    Map<String, Integer> numFlips = calcNumFlips(test);
     if (m_Verbose)
       m_Logger.info("#Flips: " + numFlips);
 
-    double overallFlipCycles = Calc.calcOverallFlipCycles(test);
+    double overallFlipCycles = calcOverallFlipCycles(test);
     if (m_Verbose)
       m_Logger.info("Overall flip cycles: " + overallFlipCycles);
 

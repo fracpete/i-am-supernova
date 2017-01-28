@@ -28,6 +28,8 @@ import net.sourceforge.argparse4j.internal.HelpScreenException;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.AbstractPixelBasedOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.PNG;
+import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
+import nz.ac.waikato.cms.supernova.triangle.Incenter;
 
 import java.awt.Color;
 import java.io.File;
@@ -62,6 +64,8 @@ public class Supernova {
 
   public static final String VERBOSE = "verbose";
 
+  public static final String CENTER = "center";
+
   public static final String GENERATOR = "generator";
 
   public static final String MARGIN = "margin";
@@ -76,89 +80,89 @@ public class Supernova {
 	+ "https://github.com/fracpete/i-am-supernova");
 
     // openness
-    parser.addArgument("--" + Calc.OPENNESS + SCORE_SUFFIX)
-      .metavar(Calc.OPENNESS + SCORE_SUFFIX)
+    parser.addArgument("--" + AbstractOutputGenerator.OPENNESS + SCORE_SUFFIX)
+      .metavar(AbstractOutputGenerator.OPENNESS + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.OPENNESS + "' (0-5).");
-    parser.addArgument("--" + Calc.OPENNESS + PERCENTILE_SUFFIX)
-      .metavar(Calc.OPENNESS + PERCENTILE_SUFFIX)
+      .help("The score for '" + AbstractOutputGenerator.OPENNESS + "' (0-5).");
+    parser.addArgument("--" + AbstractOutputGenerator.OPENNESS + PERCENTILE_SUFFIX)
+      .metavar(AbstractOutputGenerator.OPENNESS + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.OPENNESS + "' (0-100).");
-    parser.addArgument("--" + Calc.OPENNESS + COLOR_SUFFIX)
-      .metavar(Calc.OPENNESS + COLOR_SUFFIX)
+      .help("The percentile for '" + AbstractOutputGenerator.OPENNESS + "' (0-100).");
+    parser.addArgument("--" + AbstractOutputGenerator.OPENNESS + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.OPENNESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.OPENNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.ORANGE) + ").");
+      .help("The color for '" + AbstractOutputGenerator.OPENNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.ORANGE) + ").");
 
     // extraversion
-    parser.addArgument("--" + Calc.EXTRAVERSION + SCORE_SUFFIX)
-      .metavar(Calc.EXTRAVERSION + SCORE_SUFFIX)
+    parser.addArgument("--" + AbstractOutputGenerator.EXTRAVERSION + SCORE_SUFFIX)
+      .metavar(AbstractOutputGenerator.EXTRAVERSION + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.EXTRAVERSION + "' (0-5).");
-    parser.addArgument("--" + Calc.EXTRAVERSION + PERCENTILE_SUFFIX)
-      .metavar(Calc.EXTRAVERSION + PERCENTILE_SUFFIX)
+      .help("The score for '" + AbstractOutputGenerator.EXTRAVERSION + "' (0-5).");
+    parser.addArgument("--" + AbstractOutputGenerator.EXTRAVERSION + PERCENTILE_SUFFIX)
+      .metavar(AbstractOutputGenerator.EXTRAVERSION + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.EXTRAVERSION + "' (0-100).");
-    parser.addArgument("--" + Calc.EXTRAVERSION + COLOR_SUFFIX)
-      .metavar(Calc.EXTRAVERSION + COLOR_SUFFIX)
+      .help("The percentile for '" + AbstractOutputGenerator.EXTRAVERSION + "' (0-100).");
+    parser.addArgument("--" + AbstractOutputGenerator.EXTRAVERSION + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.EXTRAVERSION + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.YELLOW))
-      .help("The color for '" + Calc.EXTRAVERSION + "' in hex format (e.g., " + ColorHelper.toHex(Color.YELLOW) + ").");
+      .help("The color for '" + AbstractOutputGenerator.EXTRAVERSION + "' in hex format (e.g., " + ColorHelper.toHex(Color.YELLOW) + ").");
 
     // agreeablenes
-    parser.addArgument("--" + Calc.AGREEABLENESS + SCORE_SUFFIX)
-      .metavar(Calc.AGREEABLENESS + SCORE_SUFFIX)
+    parser.addArgument("--" + AbstractOutputGenerator.AGREEABLENESS + SCORE_SUFFIX)
+      .metavar(AbstractOutputGenerator.AGREEABLENESS + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.AGREEABLENESS + "' (0-5).");
-    parser.addArgument("--" + Calc.AGREEABLENESS + PERCENTILE_SUFFIX)
-      .metavar(Calc.AGREEABLENESS + PERCENTILE_SUFFIX)
+      .help("The score for '" + AbstractOutputGenerator.AGREEABLENESS + "' (0-5).");
+    parser.addArgument("--" + AbstractOutputGenerator.AGREEABLENESS + PERCENTILE_SUFFIX)
+      .metavar(AbstractOutputGenerator.AGREEABLENESS + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.AGREEABLENESS + "' (0-100).");
-    parser.addArgument("--" + Calc.AGREEABLENESS + COLOR_SUFFIX)
-      .metavar(Calc.AGREEABLENESS + COLOR_SUFFIX)
+      .help("The percentile for '" + AbstractOutputGenerator.AGREEABLENESS + "' (0-100).");
+    parser.addArgument("--" + AbstractOutputGenerator.AGREEABLENESS + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.AGREEABLENESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.GREEN))
-      .help("The color for '" + Calc.AGREEABLENESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.GREEN) + ").");
+      .help("The color for '" + AbstractOutputGenerator.AGREEABLENESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.GREEN) + ").");
 
     // conscientiousness
-    parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + SCORE_SUFFIX)
-      .metavar(Calc.CONSCIENTIOUSNESS + SCORE_SUFFIX)
+    parser.addArgument("--" + AbstractOutputGenerator.CONSCIENTIOUSNESS + SCORE_SUFFIX)
+      .metavar(AbstractOutputGenerator.CONSCIENTIOUSNESS + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.CONSCIENTIOUSNESS + "' (0-5).");
-    parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
-      .metavar(Calc.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
+      .help("The score for '" + AbstractOutputGenerator.CONSCIENTIOUSNESS + "' (0-5).");
+    parser.addArgument("--" + AbstractOutputGenerator.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
+      .metavar(AbstractOutputGenerator.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.CONSCIENTIOUSNESS + "' (0-100).");
-    parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
-      .metavar(Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
+      .help("The percentile for '" + AbstractOutputGenerator.CONSCIENTIOUSNESS + "' (0-100).");
+    parser.addArgument("--" + AbstractOutputGenerator.CONSCIENTIOUSNESS + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.CONSCIENTIOUSNESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.BLUE))
-      .help("The color for '" + Calc.CONSCIENTIOUSNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.BLUE) + ").");
+      .help("The color for '" + AbstractOutputGenerator.CONSCIENTIOUSNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.BLUE) + ").");
 
     // neuroticism
-    parser.addArgument("--" + Calc.NEUROTICISM + SCORE_SUFFIX)
-      .metavar(Calc.NEUROTICISM + SCORE_SUFFIX)
+    parser.addArgument("--" + AbstractOutputGenerator.NEUROTICISM + SCORE_SUFFIX)
+      .metavar(AbstractOutputGenerator.NEUROTICISM + SCORE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The score for '" + Calc.NEUROTICISM + "' (0-5).");
-    parser.addArgument("--" + Calc.NEUROTICISM + PERCENTILE_SUFFIX)
-      .metavar(Calc.NEUROTICISM + PERCENTILE_SUFFIX)
+      .help("The score for '" + AbstractOutputGenerator.NEUROTICISM + "' (0-5).");
+    parser.addArgument("--" + AbstractOutputGenerator.NEUROTICISM + PERCENTILE_SUFFIX)
+      .metavar(AbstractOutputGenerator.NEUROTICISM + PERCENTILE_SUFFIX)
       .required(true)
       .type(Double.class)
-      .help("The percentile for '" + Calc.NEUROTICISM + "' (0-100).");
-    parser.addArgument("--" + Calc.NEUROTICISM + COLOR_SUFFIX)
-      .metavar(Calc.NEUROTICISM + COLOR_SUFFIX)
+      .help("The percentile for '" + AbstractOutputGenerator.NEUROTICISM + "' (0-100).");
+    parser.addArgument("--" + AbstractOutputGenerator.NEUROTICISM + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.NEUROTICISM + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.RED))
-      .help("The color for '" + Calc.NEUROTICISM + "' in hex format (e.g., " + ColorHelper.toHex(Color.RED) + ").");
+      .help("The color for '" + AbstractOutputGenerator.NEUROTICISM + "' in hex format (e.g., " + ColorHelper.toHex(Color.RED) + ").");
 
     // other parameters
     parser.addArgument("--" + BACKGROUND)
@@ -191,6 +195,12 @@ public class Supernova {
       .setDefault(2000)
       .help("The height of the output.");
 
+    parser.addArgument("--" + CENTER)
+      .metavar(CENTER)
+      .type(String.class)
+      .setDefault(Incenter.class.getName())
+      .help("The name of the algorithm for calculating the center of a triangle.");
+
     parser.addArgument("--" + GENERATOR)
       .metavar(GENERATOR)
       .type(String.class)
@@ -220,37 +230,40 @@ public class Supernova {
 
     // test values
     Map<String,List<Double>> test = new HashMap<>();
-    test.put(Calc.OPENNESS, new ArrayList<>(Arrays.asList(new Double[]{
-      namespace.getDouble(Calc.OPENNESS + SCORE_SUFFIX),
-      namespace.getDouble(Calc.OPENNESS + PERCENTILE_SUFFIX)
+    test.put(AbstractOutputGenerator.OPENNESS, new ArrayList<>(Arrays.asList(new Double[]{
+      namespace.getDouble(AbstractOutputGenerator.OPENNESS + SCORE_SUFFIX),
+      namespace.getDouble(AbstractOutputGenerator.OPENNESS + PERCENTILE_SUFFIX)
     })));
-    test.put(Calc.EXTRAVERSION, new ArrayList<>(Arrays.asList(new Double[]{
-      namespace.getDouble(Calc.EXTRAVERSION + SCORE_SUFFIX),
-      namespace.getDouble(Calc.EXTRAVERSION + PERCENTILE_SUFFIX)
+    test.put(AbstractOutputGenerator.EXTRAVERSION, new ArrayList<>(Arrays.asList(new Double[]{
+      namespace.getDouble(AbstractOutputGenerator.EXTRAVERSION + SCORE_SUFFIX),
+      namespace.getDouble(AbstractOutputGenerator.EXTRAVERSION + PERCENTILE_SUFFIX)
     })));
-    test.put(Calc.CONSCIENTIOUSNESS, new ArrayList<>(Arrays.asList(new Double[]{
-      namespace.getDouble(Calc.CONSCIENTIOUSNESS + SCORE_SUFFIX),
-      namespace.getDouble(Calc.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
+    test.put(AbstractOutputGenerator.CONSCIENTIOUSNESS, new ArrayList<>(Arrays.asList(new Double[]{
+      namespace.getDouble(AbstractOutputGenerator.CONSCIENTIOUSNESS + SCORE_SUFFIX),
+      namespace.getDouble(AbstractOutputGenerator.CONSCIENTIOUSNESS + PERCENTILE_SUFFIX)
     })));
-    test.put(Calc.NEUROTICISM, new ArrayList<>(Arrays.asList(new Double[]{
-      namespace.getDouble(Calc.NEUROTICISM + SCORE_SUFFIX),
-      namespace.getDouble(Calc.NEUROTICISM + PERCENTILE_SUFFIX)
+    test.put(AbstractOutputGenerator.NEUROTICISM, new ArrayList<>(Arrays.asList(new Double[]{
+      namespace.getDouble(AbstractOutputGenerator.NEUROTICISM + SCORE_SUFFIX),
+      namespace.getDouble(AbstractOutputGenerator.NEUROTICISM + PERCENTILE_SUFFIX)
     })));
-    test.put(Calc.AGREEABLENESS, new ArrayList<>(Arrays.asList(new Double[]{
-      namespace.getDouble(Calc.AGREEABLENESS + SCORE_SUFFIX),
-      namespace.getDouble(Calc.AGREEABLENESS + PERCENTILE_SUFFIX)
+    test.put(AbstractOutputGenerator.AGREEABLENESS, new ArrayList<>(Arrays.asList(new Double[]{
+      namespace.getDouble(AbstractOutputGenerator.AGREEABLENESS + SCORE_SUFFIX),
+      namespace.getDouble(AbstractOutputGenerator.AGREEABLENESS + PERCENTILE_SUFFIX)
     })));
 
     // colors
     Map<String,Color> colors = new HashMap<>();
-    colors.put(Calc.OPENNESS,          ColorHelper.valueOf(namespace.getString(Calc.OPENNESS          + COLOR_SUFFIX), Color.ORANGE));
-    colors.put(Calc.EXTRAVERSION,      ColorHelper.valueOf(namespace.getString(Calc.EXTRAVERSION      + COLOR_SUFFIX), Color.YELLOW));
-    colors.put(Calc.AGREEABLENESS,     ColorHelper.valueOf(namespace.getString(Calc.AGREEABLENESS     + COLOR_SUFFIX), Color.GREEN));
-    colors.put(Calc.CONSCIENTIOUSNESS, ColorHelper.valueOf(namespace.getString(Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX), Color.BLUE));
-    colors.put(Calc.NEUROTICISM,       ColorHelper.valueOf(namespace.getString(Calc.NEUROTICISM       + COLOR_SUFFIX), Color.RED));
+    colors.put(AbstractOutputGenerator.OPENNESS,          ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.OPENNESS          + COLOR_SUFFIX), Color.ORANGE));
+    colors.put(AbstractOutputGenerator.EXTRAVERSION,      ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.EXTRAVERSION      + COLOR_SUFFIX), Color.YELLOW));
+    colors.put(AbstractOutputGenerator.AGREEABLENESS,     ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.AGREEABLENESS     + COLOR_SUFFIX), Color.GREEN));
+    colors.put(AbstractOutputGenerator.CONSCIENTIOUSNESS, ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.CONSCIENTIOUSNESS + COLOR_SUFFIX), Color.BLUE));
+    colors.put(AbstractOutputGenerator.NEUROTICISM,       ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.NEUROTICISM       + COLOR_SUFFIX), Color.RED));
 
     File outfile = new File(namespace.getString(OUTPUT));
 
+    String centerCls = namespace.getString(CENTER);
+    if (!centerCls.contains("."))
+      centerCls = AbstractTriangleCenterCalculation.class.getPackage().getName() + "." + centerCls;
     String generatorCls = namespace.getString(GENERATOR);
     if (!generatorCls.contains("."))
       generatorCls = AbstractOutputGenerator.class.getPackage().getName() + "." + generatorCls;
@@ -260,6 +273,7 @@ public class Supernova {
     generator.setBackground(ColorHelper.valueOf(namespace.getString(BACKGROUND), Color.BLACK));
     generator.setOpacity(namespace.getDouble(OPACITY));
     generator.setMargin(namespace.getDouble(MARGIN));
+    generator.setCenter((AbstractTriangleCenterCalculation) Class.forName(centerCls).newInstance());
     if (generator instanceof AbstractPixelBasedOutputGenerator) {
       AbstractPixelBasedOutputGenerator pixel = (AbstractPixelBasedOutputGenerator) generator;
       pixel.setWidth(namespace.getInt(WIDTH));

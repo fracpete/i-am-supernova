@@ -28,6 +28,8 @@ import net.sourceforge.argparse4j.internal.HelpScreenException;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.AbstractPixelBasedOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.PNG;
+import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
+import nz.ac.waikato.cms.supernova.triangle.Incenter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -73,16 +75,18 @@ public class SupernovaCSV {
 
   public static final String VERBOSE = "verbose";
 
+  public static final String CENTER = "center";
+
   public static final String GENERATOR = "generator";
 
   public static final String MARGIN = "margin";
 
   public static final String MEASURE_LIST =
-    Calc.OPENNESS + ","
-      + Calc.EXTRAVERSION + ","
-      + Calc.AGREEABLENESS + ","
-      + Calc.CONSCIENTIOUSNESS + ","
-      + Calc.NEUROTICISM;
+    AbstractOutputGenerator.OPENNESS + ","
+      + AbstractOutputGenerator.EXTRAVERSION + ","
+      + AbstractOutputGenerator.AGREEABLENESS + ","
+      + AbstractOutputGenerator.CONSCIENTIOUSNESS + ","
+      + AbstractOutputGenerator.NEUROTICISM;
 
   public static void main(String[] args) throws Exception {
     ArgumentParser parser;
@@ -101,31 +105,31 @@ public class SupernovaCSV {
 	+ "https://github.com/fracpete/i-am-supernova");
 
     // colors
-    parser.addArgument("--" + Calc.OPENNESS + COLOR_SUFFIX)
-      .metavar(Calc.OPENNESS + COLOR_SUFFIX)
+    parser.addArgument("--" + AbstractOutputGenerator.OPENNESS + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.OPENNESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.ORANGE))
-      .help("The color for '" + Calc.OPENNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.ORANGE) + ").");
-    parser.addArgument("--" + Calc.EXTRAVERSION + COLOR_SUFFIX)
-      .metavar(Calc.EXTRAVERSION + COLOR_SUFFIX)
+      .help("The color for '" + AbstractOutputGenerator.OPENNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.ORANGE) + ").");
+    parser.addArgument("--" + AbstractOutputGenerator.EXTRAVERSION + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.EXTRAVERSION + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.YELLOW))
-      .help("The color for '" + Calc.EXTRAVERSION + "' in hex format (e.g., " + ColorHelper.toHex(Color.YELLOW) + ").");
-    parser.addArgument("--" + Calc.AGREEABLENESS + COLOR_SUFFIX)
-      .metavar(Calc.AGREEABLENESS + COLOR_SUFFIX)
+      .help("The color for '" + AbstractOutputGenerator.EXTRAVERSION + "' in hex format (e.g., " + ColorHelper.toHex(Color.YELLOW) + ").");
+    parser.addArgument("--" + AbstractOutputGenerator.AGREEABLENESS + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.AGREEABLENESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.GREEN))
-      .help("The color for '" + Calc.AGREEABLENESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.GREEN) + ").");
-    parser.addArgument("--" + Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
-      .metavar(Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX)
+      .help("The color for '" + AbstractOutputGenerator.AGREEABLENESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.GREEN) + ").");
+    parser.addArgument("--" + AbstractOutputGenerator.CONSCIENTIOUSNESS + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.CONSCIENTIOUSNESS + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.BLUE))
-      .help("The color for '" + Calc.CONSCIENTIOUSNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.BLUE) + ").");
-    parser.addArgument("--" + Calc.NEUROTICISM + COLOR_SUFFIX)
-      .metavar(Calc.NEUROTICISM + COLOR_SUFFIX)
+      .help("The color for '" + AbstractOutputGenerator.CONSCIENTIOUSNESS + "' in hex format (e.g., " + ColorHelper.toHex(Color.BLUE) + ").");
+    parser.addArgument("--" + AbstractOutputGenerator.NEUROTICISM + COLOR_SUFFIX)
+      .metavar(AbstractOutputGenerator.NEUROTICISM + COLOR_SUFFIX)
       .type(String.class)
       .setDefault(ColorHelper.toHex(Color.RED))
-      .help("The color for '" + Calc.NEUROTICISM + "' in hex format (e.g., " + ColorHelper.toHex(Color.RED) + ").");
+      .help("The color for '" + AbstractOutputGenerator.NEUROTICISM + "' in hex format (e.g., " + ColorHelper.toHex(Color.RED) + ").");
 
     // other parameters
     parser.addArgument("--" + CSV)
@@ -189,6 +193,12 @@ public class SupernovaCSV {
       .setDefault(2000)
       .help("The height of the output.");
 
+    parser.addArgument("--" + CENTER)
+      .metavar(CENTER)
+      .type(String.class)
+      .setDefault(Incenter.class.getName())
+      .help("The name of the algorithm for calculating the center of a triangle.");
+
     parser.addArgument("--" + GENERATOR)
       .metavar(GENERATOR)
       .type(String.class)
@@ -218,14 +228,17 @@ public class SupernovaCSV {
 
     // colors
     Map<String,Color> colors = new HashMap<>();
-    colors.put(Calc.OPENNESS,          ColorHelper.valueOf(namespace.getString(Calc.OPENNESS          + COLOR_SUFFIX), Color.ORANGE));
-    colors.put(Calc.EXTRAVERSION,      ColorHelper.valueOf(namespace.getString(Calc.EXTRAVERSION      + COLOR_SUFFIX), Color.YELLOW));
-    colors.put(Calc.AGREEABLENESS,     ColorHelper.valueOf(namespace.getString(Calc.AGREEABLENESS     + COLOR_SUFFIX), Color.GREEN));
-    colors.put(Calc.CONSCIENTIOUSNESS, ColorHelper.valueOf(namespace.getString(Calc.CONSCIENTIOUSNESS + COLOR_SUFFIX), Color.BLUE));
-    colors.put(Calc.NEUROTICISM,       ColorHelper.valueOf(namespace.getString(Calc.NEUROTICISM       + COLOR_SUFFIX), Color.RED));
+    colors.put(AbstractOutputGenerator.OPENNESS,          ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.OPENNESS          + COLOR_SUFFIX), Color.ORANGE));
+    colors.put(AbstractOutputGenerator.EXTRAVERSION,      ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.EXTRAVERSION      + COLOR_SUFFIX), Color.YELLOW));
+    colors.put(AbstractOutputGenerator.AGREEABLENESS,     ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.AGREEABLENESS     + COLOR_SUFFIX), Color.GREEN));
+    colors.put(AbstractOutputGenerator.CONSCIENTIOUSNESS, ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.CONSCIENTIOUSNESS + COLOR_SUFFIX), Color.BLUE));
+    colors.put(AbstractOutputGenerator.NEUROTICISM,       ColorHelper.valueOf(namespace.getString(AbstractOutputGenerator.NEUROTICISM       + COLOR_SUFFIX), Color.RED));
 
     File outdir = new File(namespace.getString(OUTPUT));
 
+    String centerCls = namespace.getString(CENTER);
+    if (!centerCls.contains("."))
+      centerCls = AbstractTriangleCenterCalculation.class.getPackage().getName() + "." + centerCls;
     String generatorCls = namespace.getString(GENERATOR);
     if (!generatorCls.contains("."))
       generatorCls = AbstractOutputGenerator.class.getPackage().getName() + "." + generatorCls;
@@ -235,6 +248,7 @@ public class SupernovaCSV {
     generator.setBackground(ColorHelper.valueOf(namespace.getString(BACKGROUND), Color.BLACK));
     generator.setOpacity(namespace.getDouble(OPACITY));
     generator.setMargin(namespace.getDouble(MARGIN));
+    generator.setCenter((AbstractTriangleCenterCalculation) Class.forName(centerCls).newInstance());
     if (generator instanceof AbstractPixelBasedOutputGenerator) {
       AbstractPixelBasedOutputGenerator pixel = (AbstractPixelBasedOutputGenerator) generator;
       pixel.setWidth(namespace.getInt(WIDTH));
