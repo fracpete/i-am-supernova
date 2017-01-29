@@ -144,4 +144,13 @@ public class ColorHelper {
     return result;
   }
 
+  /**
+   * Returns the inverted color.
+   *
+   * @param color	the color to invert
+   * @return		the inverted color
+   */
+  public static Color invert(Color color) {
+    return new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue());
+  }
 }
