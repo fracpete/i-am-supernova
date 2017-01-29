@@ -26,6 +26,8 @@ import nz.ac.waikato.cms.supernova.triangle.Incenter;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,12 +100,7 @@ public abstract class AbstractOutputGenerator<T> {
     m_Margin     = 0.1;
     m_Background = Color.BLACK;
     m_Center     = new Incenter();
-    m_Colors     = new HashMap<>();
-    m_Colors.put(OPENNESS,          Color.ORANGE);
-    m_Colors.put(EXTRAVERSION,      Color.YELLOW);
-    m_Colors.put(AGREEABLENESS,     Color.GREEN);
-    m_Colors.put(CONSCIENTIOUSNESS, Color.BLUE);
-    m_Colors.put(NEUROTICISM,       Color.RED);
+    m_Colors     = getDefaultColors();
   }
 
   /**
@@ -352,5 +349,41 @@ public abstract class AbstractOutputGenerator<T> {
       return errors.toString();
 
     return savePlot(plot, output);
+  }
+
+  /**
+   * Returns the default colors.
+   *
+   * @return		the default
+   */
+  public static Map<String,Color> getDefaultColors() {
+    Map<String,Color> 	result;
+
+    result = new HashMap<>();
+    result.put(OPENNESS,          Color.ORANGE);
+    result.put(EXTRAVERSION,      Color.YELLOW);
+    result.put(AGREEABLENESS,     Color.GREEN);
+    result.put(CONSCIENTIOUSNESS, Color.BLUE);
+    result.put(NEUROTICISM,       Color.RED);
+
+    return result;
+  }
+
+  /**
+   * Returns the default statistics.
+   *
+   * @return		the default
+   */
+  public static Map<String,List<Double>> getDefaultStatistics() {
+    Map<String,List<Double>>	result;
+
+    result = new HashMap<>();
+    result.put(OPENNESS,          new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
+    result.put(EXTRAVERSION,      new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
+    result.put(AGREEABLENESS,     new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
+    result.put(CONSCIENTIOUSNESS, new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
+    result.put(NEUROTICISM,       new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
+
+    return result;
   }
 }
