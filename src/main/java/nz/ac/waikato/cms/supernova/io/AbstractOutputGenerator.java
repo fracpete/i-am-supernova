@@ -20,7 +20,7 @@
 
 package nz.ac.waikato.cms.supernova.io;
 
-import nz.ac.waikato.cms.supernova.ColorHelper;
+import nz.ac.waikato.cms.supernova.gui.ColorHelper;
 import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
 import nz.ac.waikato.cms.supernova.triangle.Incenter;
 

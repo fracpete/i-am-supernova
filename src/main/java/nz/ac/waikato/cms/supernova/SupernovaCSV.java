@@ -25,6 +25,7 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.internal.HelpScreenException;
+import nz.ac.waikato.cms.supernova.gui.ColorHelper;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.AbstractPixelBasedOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.PNG;
@@ -197,13 +198,17 @@ public class SupernovaCSV {
       .metavar(CENTER)
       .type(String.class)
       .setDefault(Incenter.class.getName())
-      .help("The name of the algorithm for calculating the center of a triangle.");
+      .help(
+	"The name of the algorithm for calculating the center of a triangle.\n"
+	  + "Available: " + Registry.listToString(Registry.CENTERS, true));
 
     parser.addArgument("--" + GENERATOR)
       .metavar(GENERATOR)
       .type(String.class)
       .setDefault(PNG.class.getName())
-      .help("The name of the generator class to use.");
+      .help(
+	"The name of the generator class to use.\n"
+	  + "Available: " + Registry.listToString(Registry.GENERATORS, true));
 
     parser.addArgument("--" + OUTPUT)
       .metavar(OUTPUT)

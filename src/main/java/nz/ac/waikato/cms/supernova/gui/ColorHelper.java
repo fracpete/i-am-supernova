@@ -18,7 +18,7 @@
  * Copyright (C) 2017 University of Waikato, Hamilton, NZ
  */
 
-package nz.ac.waikato.cms.supernova;
+package nz.ac.waikato.cms.supernova.gui;
 
 import java.awt.Color;
 
