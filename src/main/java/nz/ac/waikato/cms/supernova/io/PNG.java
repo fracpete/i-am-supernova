@@ -34,7 +34,7 @@ import java.util.Map;
  * @version $Revision$
  */
 public class PNG
-  extends AbstractPixelBasedOutputGenerator {
+  extends AbstractPixelBasedOutputGenerator<BufferedImage> {
 
   /**
    * Returns the default extension to use.
@@ -88,18 +88,17 @@ public class PNG
   }
 
   /**
-   * Generates the output.
+   * Generates the intermediate data structure.
    *
    * @param test		the test results (measure - [score, percentile])
    * @param angle		the angle to use
    * @param numFlips		the number of flips
    * @param overallFlipCycles	the overall flip cycles
-   * @param output		the file to save the result in
+   * @param errors		for storing error messages
    * @return			null if successfully generated, otherwise error message
    */
-  @Override
-  protected String doGenerate(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, File output) {
-    BufferedImage	img;
+  public BufferedImage generatePlot(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, StringBuilder errors) {
+    BufferedImage	result;
     Graphics2D		g;
     int			cx;
     int			cy;
@@ -117,8 +116,8 @@ public class PNG
     double[]		c;
     double		currentAngle;
 
-    img = new BufferedImage(m_Width, m_Height, BufferedImage.TYPE_INT_ARGB);
-    g   = img.createGraphics();
+    result = new BufferedImage(m_Width, m_Height, BufferedImage.TYPE_INT_ARGB);
+    g   = result.createGraphics();
 
     // background
     g.setColor(m_Background);
@@ -159,8 +158,19 @@ public class PNG
     // clean up
     g.dispose();
 
+    return result;
+  }
+
+  /**
+   * Generates the output.
+   *
+   * @param plot		the plot to save
+   * @param output		the file to save the result in
+   * @return			null if successfully generated, otherwise error message
+   */
+  public String savePlot(BufferedImage plot, File output) {
     try {
-      ImageIO.write(img, "png", output);
+      ImageIO.write(plot, "png", output);
     }
     catch (Exception e) {
       return "Failed to write output to '" + output + ": " + e;

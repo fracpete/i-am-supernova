@@ -29,9 +29,10 @@ import java.util.Map;
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
+ * @param <T> the type of the intermediate data structure being generated
  */
-public abstract class AbstractPixelBasedOutputGenerator
-  extends AbstractOutputGenerator {
+public abstract class AbstractPixelBasedOutputGenerator<T>
+  extends AbstractOutputGenerator<T> {
 
   /** the width. */
   protected int m_Width;

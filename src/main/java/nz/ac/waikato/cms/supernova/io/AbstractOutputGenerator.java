@@ -36,8 +36,9 @@ import java.util.logging.Logger;
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
+ * @param <T> the type of the intermediate data structure being generated
  */
-public abstract class AbstractOutputGenerator {
+public abstract class AbstractOutputGenerator<T> {
 
   public static final String EXTRAVERSION = "extraversion";
 
@@ -291,16 +292,25 @@ public abstract class AbstractOutputGenerator {
   public abstract String getExtension();
 
   /**
-   * Generates the output.
+   * Generates the intermediate data structure.
    *
    * @param test		the test results (measure - [score, percentile])
    * @param angle		the angle to use
    * @param numFlips		the number of flips
    * @param overallFlipCycles	the overall flip cycles
+   * @param errors		for storing error messages
+   * @return			null if successfully generated, otherwise error message
+   */
+  public abstract T generatePlot(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, StringBuilder errors);
+
+  /**
+   * Generates the output.
+   *
+   * @param plot		the plot to save
    * @param output		the file to save the result in
    * @return			null if successfully generated, otherwise error message
    */
-  protected abstract String doGenerate(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, File output);
+  public abstract String savePlot(T plot, File output);
 
   /**
    * Generates the output.
@@ -310,6 +320,9 @@ public abstract class AbstractOutputGenerator {
    * @return			null if successfully generated, otherwise error message
    */
   public String generate(Map<String,List<Double>> test, File output) {
+    StringBuilder	errors;
+    T			plot;
+
     if (m_Verbose) {
       Map<String,String> colorsStr = new HashMap<>();
       for (String key: m_Colors.keySet())
@@ -333,6 +346,11 @@ public abstract class AbstractOutputGenerator {
     if (m_Verbose)
       m_Logger.info("Overall flip cycles: " + overallFlipCycles);
 
-    return doGenerate(test, angle, numFlips, (int) overallFlipCycles, output);
+    errors = new StringBuilder();
+    plot   = generatePlot(test, angle, numFlips, (int) overallFlipCycles, errors);
+    if (errors.length() != 0)
+      return errors.toString();
+
+    return savePlot(plot, output);
   }
 }
