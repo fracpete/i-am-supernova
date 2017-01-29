@@ -404,11 +404,11 @@ public abstract class AbstractOutputGenerator<T> {
   }
 
   /**
-   * Returns the default statistics.
+   * Returns empty statistics.
    *
-   * @return		the default
+   * @return		the stats
    */
-  public static Map<String,List<Double>> getDefaultStatistics() {
+  public static Map<String,List<Double>> getEmptyStatistics() {
     Map<String,List<Double>>	result;
 
     result = new HashMap<>();
@@ -417,6 +417,24 @@ public abstract class AbstractOutputGenerator<T> {
     result.put(AGREEABLENESS,     new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
     result.put(CONSCIENTIOUSNESS, new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
     result.put(NEUROTICISM,       new ArrayList<>(Arrays.asList(new Double[]{0.0, 0.0})));
+
+    return result;
+  }
+
+  /**
+   * Returns the default statistics.
+   *
+   * @return		the default
+   */
+  public static Map<String,List<Double>> getDefaultStatistics() {
+    Map<String,List<Double>>	result;
+
+    result = new HashMap<>();
+    result.put(OPENNESS,          new ArrayList<>(Arrays.asList(new Double[]{4.3, 59.0})));
+    result.put(EXTRAVERSION,      new ArrayList<>(Arrays.asList(new Double[]{2.2, 18.0})));
+    result.put(AGREEABLENESS,     new ArrayList<>(Arrays.asList(new Double[]{4.2, 63.0})));
+    result.put(CONSCIENTIOUSNESS, new ArrayList<>(Arrays.asList(new Double[]{3.5, 52.0})));
+    result.put(NEUROTICISM,       new ArrayList<>(Arrays.asList(new Double[]{2.4, 25.0})));
 
     return result;
   }
