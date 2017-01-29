@@ -89,6 +89,22 @@ public abstract class AbstractPixelBasedOutputGenerator<T>
   }
 
   /**
+   * Generates the intermediate data structure.
+   *
+   * @param test		the test results (measure - [score, percentile])
+   * @param errors		for storing error messages
+   * @return			null if successfully generated, otherwise error message
+   */
+  public T generatePlot(Map<String,List<Double>> test, StringBuilder errors) {
+    if (m_Verbose) {
+      m_Logger.info("Width: " + m_Width);
+      m_Logger.info("Height: " + m_Height);
+    }
+
+    return super.generatePlot(test, errors);
+  }
+
+  /**
    * Generates the output.
    *
    * @param test		the test results

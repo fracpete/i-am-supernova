@@ -292,13 +292,47 @@ public abstract class AbstractOutputGenerator<T> {
    * Generates the intermediate data structure.
    *
    * @param test		the test results (measure - [score, percentile])
+   * @param errors		for storing error messages
+   * @return			null if successfully generated, otherwise error message
+   */
+  public T generatePlot(Map<String,List<Double>> test, StringBuilder errors) {
+    if (m_Verbose) {
+      Map<String,String> colorsStr = new HashMap<>();
+      for (String key: m_Colors.keySet())
+	colorsStr.put(key, ColorHelper.toHex(m_Colors.get(key)));
+      m_Logger.info("Colors: " + colorsStr);
+      m_Logger.info("Background: " + ColorHelper.toHex(m_Background));
+      m_Logger.info("Opacity: " + m_Opacity);
+      m_Logger.info("Margin: " + m_Margin);
+      m_Logger.info("Test: " + test);
+    }
+
+    double angle = calcAngle(test);
+    if (m_Verbose)
+      m_Logger.info("angle: " + angle);
+
+    Map<String, Integer> numFlips = calcNumFlips(test);
+    if (m_Verbose)
+      m_Logger.info("#Flips: " + numFlips);
+
+    double overallFlipCycles = calcOverallFlipCycles(test);
+    if (m_Verbose)
+      m_Logger.info("Overall flip cycles: " + overallFlipCycles);
+
+    return generatePlot(test, angle, numFlips, (int) overallFlipCycles, errors);
+  }
+
+  /**
+   * Generates the intermediate data structure.
+   *
+   * @param test		the test results (measure - [score, percentile])
    * @param angle		the angle to use
    * @param numFlips		the number of flips
    * @param overallFlipCycles	the overall flip cycles
    * @param errors		for storing error messages
    * @return			null if successfully generated, otherwise error message
    */
-  public abstract T generatePlot(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, StringBuilder errors);
+  protected abstract T generatePlot(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, StringBuilder errors);
 
   /**
    * Generates the output.
