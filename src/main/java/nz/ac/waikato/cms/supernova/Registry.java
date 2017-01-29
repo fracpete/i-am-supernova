@@ -23,6 +23,9 @@ package nz.ac.waikato.cms.supernova;
 import nz.ac.waikato.cms.supernova.io.PNG;
 import nz.ac.waikato.cms.supernova.triangle.Incenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Registry for available classes.
  *
@@ -42,17 +45,17 @@ public class Registry {
   };
 
   /**
-   * Turns a class list into a comma-separated string.
+   * Turns a class array into a comma-separated string.
    *
-   * @param list	the list of classes
+   * @param array	the array of classes
    * @param stripPkg 	whether to strop the package name
    * @return		the generated string
    */
-  public static String listToString(Class[] list, boolean stripPkg) {
+  public static String toString(Class[] array, boolean stripPkg) {
     StringBuilder	result;
 
     result = new StringBuilder();
-    for (Class cls: list) {
+    for (Class cls: array) {
       if (result.length() > 0)
 	result.append(",");
       if (stripPkg)
@@ -62,5 +65,26 @@ public class Registry {
     }
 
     return result.toString();
+  }
+
+  /**
+   * Turns a class array into a string array.
+   *
+   * @param array	the array of classes
+   * @param stripPkg 	whether to strop the package name
+   * @return		the generated string array
+   */
+  public static String[] toStringArray(Class[] array, boolean stripPkg) {
+    List<String> result;
+
+    result = new ArrayList<>();
+    for (Class cls: array) {
+      if (stripPkg)
+	result.add(cls.getSimpleName());
+      else
+	result.add(cls.getName());
+    }
+
+    return result.toArray(new String[result.size()]);
   }
 }

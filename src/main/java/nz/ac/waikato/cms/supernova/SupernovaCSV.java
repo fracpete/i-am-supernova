@@ -200,7 +200,7 @@ public class SupernovaCSV {
       .setDefault(Incenter.class.getName())
       .help(
 	"The name of the algorithm for calculating the center of a triangle.\n"
-	  + "Available: " + Registry.listToString(Registry.CENTERS, true));
+	  + "Available: " + Registry.toString(Registry.CENTERS, true));
 
     parser.addArgument("--" + GENERATOR)
       .metavar(GENERATOR)
@@ -208,7 +208,7 @@ public class SupernovaCSV {
       .setDefault(PNG.class.getName())
       .help(
 	"The name of the generator class to use.\n"
-	  + "Available: " + Registry.listToString(Registry.GENERATORS, true));
+	  + "Available: " + Registry.toString(Registry.GENERATORS, true));
 
     parser.addArgument("--" + OUTPUT)
       .metavar(OUTPUT)
