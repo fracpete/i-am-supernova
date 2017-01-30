@@ -9,9 +9,17 @@ Currently available output formats:
 * PNG
 
 
-## Example usage (single output) ##
+## User interface
+
+Simple call the `gui` (Linux/Mac) or `gui.bat` (Windows) shell script to
+start up the user interface. It allows you to generate a single output or
+batch processing based on a CSV spreadsheet (see below for details on the 
+file format).
+
+## Command-line (single output)
 Use either the `run` (Linux/Mac) or `run.bat` (Windows) script to execute
-the class `nz.ac.waikato.cms.supernova.Supernova` for generating a single plot.
+the class `nz.ac.waikato.cms.supernova.Supernova` for generating a single plot
+(use `-h` to output a comprehensive help screen).
 
 ```bash
 run \
@@ -31,10 +39,11 @@ run \
 ```
 
 
-## Example usage (multiple outputs) ##
+## Command-line (multiple outputs)
 Use either the `csv` (Linux/Mac) or `csv.bat` (Windows) script to execute
 the class `nz.ac.waikato.cms.supernova.SupernovaCSV` for generating plots 
-based on parameters stored in a CSV file. 
+based on parameters stored in a CSV file (see below for details on file
+format; use `-h` to output a comprehensive help screen). 
 The generated output files get stored in the specified output directory, 
 using the `ID` as the file name.
 
@@ -46,23 +55,7 @@ csv \
   --output outdir
 ```
 
-Example data file:
-
-```csv
-ID,measure,score,percentile
-me,extraversion,2.2,18
-me,conscientiousness,3.5,52
-me,neuroticism,2.4,25
-me,agreeableness,4.2,63
-me,openness,4.3,59
-you,extraversion,3.2,32
-you,conscientiousness,2.5,32
-you,neuroticism,2.7,31
-you,agreeableness,4.9,89
-you,openness,2.1,23
-```
-
-## Example usage (minimal code)
+## Example code (minimal code)
 The following code shows how to generate output with the default settings
 of the PNG generator:
 
@@ -93,7 +86,7 @@ if (msg != null)
   System.err.println(msg);
 ```
 
-## Example usage (full code)
+## Example code (full code)
 The following code shows how to set all options for the PNG generator and
 generate output:
 
@@ -137,4 +130,45 @@ generator.setHeight(2000);
 String msg = generator.generate(test, new File("out.png"));
 if (msg != null)
   System.err.println(msg);
+```
+
+## Example spreadsheet
+
+Requires four columns, in this particular order (the name of the column is 
+irrelevant):
+ 
+* ID
+* measure
+* score
+* percentile
+
+Details:
+
+* the `ID` identifies a group of measures 
+* the spreadsheet is sorted on `ID`
+* `measure` identifies a statistic (case-sensitive, no order required): 
+
+  * extraversion
+  * conscientiousness
+  * neuroticism
+  * agreeableness
+  * openness
+ 
+* `score` is the score of the measure (0.0 - 5.0)
+* `percentile` is the percentile of the measure (0 - 100)
+
+Example file:
+
+```csv
+ID,measure,score,percentile
+me,extraversion,2.2,18
+me,conscientiousness,3.5,52
+me,neuroticism,2.4,25
+me,agreeableness,4.2,63
+me,openness,4.3,59
+you,extraversion,3.2,32
+you,conscientiousness,2.5,32
+you,neuroticism,2.7,31
+you,agreeableness,4.9,89
+you,openness,2.1,23
 ```
