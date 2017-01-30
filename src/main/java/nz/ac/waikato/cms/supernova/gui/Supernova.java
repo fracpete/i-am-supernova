@@ -20,10 +20,13 @@
 
 package nz.ac.waikato.cms.supernova.gui;
 
+import com.googlecode.jfilechooserbookmarks.core.Utils;
 import com.googlecode.jfilechooserbookmarks.gui.BasePanel;
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
+import nz.ac.waikato.cms.core.BrowserHelper;
 import nz.ac.waikato.cms.gui.core.BaseFrame;
 import nz.ac.waikato.cms.gui.core.DirectoryChooserPanel;
+import nz.ac.waikato.cms.gui.core.ExtensionFileFilter;
 import nz.ac.waikato.cms.gui.core.FileChooserPanel;
 import nz.ac.waikato.cms.gui.core.GUIHelper;
 import nz.ac.waikato.cms.supernova.Registry;
@@ -40,11 +43,15 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -302,6 +309,9 @@ public class Supernova
 
     // generator
     m_SingleGenerator = new JComboBox<>(Registry.toStringArray(Registry.GENERATORS, true));
+    m_SingleGenerator.addActionListener((ActionEvent e) -> {
+      updateSingleOutput();
+    });
     params.add(createParameter("Generator", m_SingleGenerator));
 
     // center
@@ -326,6 +336,29 @@ public class Supernova
     adjustLabels();
 
     return result;
+  }
+
+  /**
+   * Updates the filechooser for the single output.
+   */
+  protected void updateSingleOutput() {
+    ExtensionFileFilter		filter;
+    String			cls;
+    AbstractOutputGenerator 	generator;
+
+    if (m_SingleGenerator.getSelectedIndex() == -1)
+      return;
+    try {
+      cls       = AbstractOutputGenerator.class.getPackage().getName() + "." + m_SingleGenerator.getSelectedItem();
+      generator = (AbstractOutputGenerator) Class.forName(cls).newInstance();
+      filter    = new ExtensionFileFilter(generator.getExtension().toUpperCase() + " files", generator.getExtension());
+      m_SingleOutput.removeChoosableFileFilters();
+      m_SingleOutput.addChoosableFileFilter(filter);
+      m_SingleOutput.setFileFilter(filter);
+    }
+    catch (Exception ex) {
+      m_SingleOutput.removeChoosableFileFilters();
+    }
   }
 
   /**
@@ -411,6 +444,7 @@ public class Supernova
 
     // csv
     m_BatchCSV = new FileChooserPanel();
+    m_BatchCSV.addChoosableFileFilter(new ExtensionFileFilter("CSV files", "csv"));
     m_BatchCSV.setPreferredSize(new Dimension(170, (int) m_BatchCSV.getPreferredSize().getHeight()));
     params.add(createParameter("CSV", m_BatchCSV));
 
@@ -436,6 +470,44 @@ public class Supernova
     params.add(panel);
 
     adjustLabels();
+
+    return result;
+  }
+
+  /**
+   * Finishes the initialization.
+   */
+  @Override
+  protected void finishInit() {
+    super.finishInit();
+    updateSingleOutput();
+  }
+
+  /**
+   * Creates the menu bar.
+   *
+   * @return		the menu bar
+   */
+  public JMenuBar createMenuBar() {
+    JMenuBar	result;
+    JMenu	menu;
+    JMenuItem	menuitem;
+
+    result = new JMenuBar();
+
+    menu = new JMenu("Program");
+    result.add(menu);
+
+    menuitem = new JMenuItem("Close", GUIHelper.getIcon("stop.gif"));
+    menuitem.addActionListener((ActionEvent e) -> closeParent());
+    menu.add(menuitem);
+
+    menu = new JMenu("Help");
+    result.add(menu);
+
+    menuitem = new JMenuItem("Homepage", GUIHelper.getIcon("homepage.png"));
+    menuitem.addActionListener((ActionEvent e) -> BrowserHelper.openURL("https://github.com/fracpete/i-am-supernova"));
+    menu.add(menuitem);
 
     return result;
   }
@@ -518,6 +590,8 @@ public class Supernova
     AbstractOutputGenerator	generator;
     String			msg;
 
+    SwingUtilities.invokeLater(() -> m_SingleGenerate.setEnabled(false));
+
     try {
       cls = AbstractOutputGenerator.class.getPackage().getName() + "." + m_SingleGenerator.getSelectedItem();
       generator = (AbstractOutputGenerator) Class.forName(cls).newInstance();
@@ -527,9 +601,43 @@ public class Supernova
       generator = new PNG();
     }
     configureSingle(generator);
+    m_Logger.info("Generating: " + m_SingleOutput.getCurrent());
+    m_Logger.info("Using: " + m_SingleStatistics.getStatistics());
     msg = generator.generate(m_SingleStatistics.getStatistics(), m_SingleOutput.getCurrent());
-    if (msg != null)
+    if (msg != null) {
+      m_Logger.severe("Failed to generate output:\n" + msg);
       GUIHelper.showErrorMessage(this, "Failed to generate output:\n" + msg);
+    }
+
+    SwingUtilities.invokeLater(() -> m_SingleGenerate.setEnabled(true));
+  }
+
+  /**
+   * Logs an exception during batch processing.
+   *
+   * @param msg		the message
+   * @param t 		the exception
+   */
+  protected void batchLog(String msg, Throwable t) {
+    m_Logger.log(Level.SEVERE, msg, t);
+    m_BatchLog.append(msg + "\n" + Utils.throwableToString(t) + "\n");
+  }
+
+  /**
+   * Logs a message/error during batch processing.
+   *
+   * @param msg		the message
+   * @param error	true if error
+   */
+  protected void batchLog(String msg, boolean error) {
+    if (error) {
+      m_BatchLog.append(msg + "\n");
+      m_Logger.severe(msg);
+    }
+    else {
+      m_BatchLog.append(msg + "\n");
+      m_Logger.info(msg);
+    }
   }
 
   /**
@@ -555,13 +663,14 @@ public class Supernova
     String			error;
 
     m_BatchLog.setText("");
+    m_BatchGenerate.setEnabled(false);
 
     try {
       cls = AbstractOutputGenerator.class.getPackage().getName() + "." + m_SingleGenerator.getSelectedItem();
       generator = (AbstractOutputGenerator) Class.forName(cls).newInstance();
     }
     catch (Exception e) {
-      m_Logger.log(Level.SEVERE, "Failed to instantiate output generator - falling back on PNG", e);
+      batchLog("Failed to instantiate output generator - falling back on PNG", e);
       generator = new PNG();
     }
 
@@ -581,14 +690,12 @@ public class Supernova
 	if (!id.equals(oldID)) {
 	  if (!test.isEmpty()) {
 	    outfile = new File(m_BatchOutput.getCurrent() + File.separator + oldID + "." + generator.getExtension());
+	    batchLog("Generating: " + outfile, false);
+	    batchLog("Using: " + test, false);
 	    msg     = generator.generate(test, outfile);
 	    if (msg != null) {
 	      error = "Failed to generate output for ID: " + oldID;
-	      m_Logger.severe(error);
-	      m_BatchLog.append(error + "\n");
-	    }
-	    else {
-	      m_BatchLog.append(outfile + "\n");
+	      batchLog(error, true);
 	    }
 	  }
 	  test.clear();
@@ -601,21 +708,20 @@ public class Supernova
       }
       if (!test.isEmpty()) {
 	outfile = new File(m_BatchOutput.getCurrent() + File.separator + oldID + "." + generator.getExtension());
+	batchLog("Generating: " + outfile, false);
+	batchLog("Using: " + test, false);
 	msg     = generator.generate(test, outfile);
 	if (msg != null) {
 	  error = "Failed to generate output for ID: " + oldID;
-	  m_Logger.severe(error);
-	  m_BatchLog.append(error + "\n");
-	}
-	else {
-	  m_BatchLog.append(outfile + "\n");
+	  batchLog(error, true);
 	}
       }
     }
     catch (Exception e) {
-      m_Logger.log(Level.SEVERE, "Failed to generate output!", e);
-      m_BatchLog.append("Failed to generate output: " + e);
+      batchLog("Failed to generate output!", e);
     }
+
+    m_BatchGenerate.setEnabled(true);
   }
 
   /**
@@ -627,6 +733,7 @@ public class Supernova
     BaseFrame frame = new BaseFrame("I Am Supernova");
     frame.setDefaultCloseOperation(BaseFrame.EXIT_ON_CLOSE);
     Supernova panel = new Supernova();
+    frame.setJMenuBar(panel.createMenuBar());
     frame.getContentPane().setLayout(new BorderLayout());
     frame.getContentPane().add(panel);
     frame.setSize(1024, 768);
