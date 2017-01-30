@@ -320,6 +320,7 @@ public class Supernova
 
     // output
     m_SingleOutput = new FileChooserPanel();
+    m_SingleOutput.setUseSaveDialog(true);
     m_SingleOutput.setPreferredSize(new Dimension(170, (int) m_SingleOutput.getPreferredSize().getHeight()));
     params.add(createParameter("Output", m_SingleOutput));
 
