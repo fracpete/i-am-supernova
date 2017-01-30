@@ -20,6 +20,7 @@
 
 package nz.ac.waikato.cms.supernova;
 
+import nz.ac.waikato.cms.supernova.io.PDF;
 import nz.ac.waikato.cms.supernova.io.PNG;
 import nz.ac.waikato.cms.supernova.triangle.Incenter;
 
@@ -37,6 +38,7 @@ public class Registry {
   /** the available generators. */
   public static Class[] GENERATORS = new Class[]{
     PNG.class,
+    PDF.class,
   };
 
   /** the available triangle center calculations. */

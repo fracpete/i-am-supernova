@@ -56,6 +56,13 @@
     </dependency>
 
     <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>itextpdf</artifactId>
+      <version>5.4.3</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
       <groupId>com.github.waikato</groupId>
       <artifactId>fcms-widgets</artifactId>
       <version>0.0.6</version>
