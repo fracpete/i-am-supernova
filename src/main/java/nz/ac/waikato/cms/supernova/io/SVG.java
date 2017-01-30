@@ -36,7 +36,7 @@ import java.util.Map;
  * @version $Revision$
  */
 public class SVG
-  extends AbstractOutputGeneratorWithDimensions<String> {
+  extends AbstractOutputGeneratorWithGraphics2D<String> {
 
   /**
    * Returns the default extension to use.
@@ -45,48 +45,6 @@ public class SVG
    */
   public String getExtension() {
     return "svg";
-  }
-
-  /**
-   * Adjusts the y value.
-   *
-   * @param y		the y to adjust
-   * @return		the adjust value
-   */
-  protected int adjustY(int y) {
-    return m_Height - y + 1;
-  }
-
-  /**
-   * Rotates the triangle point around the center of the triangle.
-   *
-   * @param p		the point of the triangle to rotate
-   * @param tc 		the triangle center
-   * @param angle	the angle to rotate counterclockwise (in degree)
-   * @return		the rotated point (y unadjusted!)
-   */
-  protected double[] rotate(double[] p, double[] tc, double angle) {
-    double[] 	pNew;
-    double[] 	pRot;
-    double	rad;
-    double[]	pFin;
-
-    pNew    = new double[2];
-    // move origin from triangle into (0,0)
-    pNew[0] = p[0] - tc[0];
-    pNew[1] = p[1] - tc[1];
-    // rotate point
-    // https://en.wikipedia.org/wiki/Rotation_(mathematics)#Two_dimensions
-    pRot    = new double[2];
-    rad     = Math.toRadians(angle);
-    pRot[0] = pNew[0]*Math.cos(rad) - pNew[1]*Math.sin(rad);
-    pRot[1] = pNew[0]*Math.sin(rad) + pNew[1]*Math.cos(rad);
-    // move origin back into triangle center
-    pFin    = new double[2];
-    pFin[0] = pRot[0] + tc[0];
-    pFin[1] = pRot[1] + tc[1];
-
-    return pFin;
   }
 
   /**
@@ -102,67 +60,10 @@ public class SVG
   public String generatePlot(Map<String,List<Double>> test, double angle, Map<String,Integer> numFlips, int overallFlipCycles, StringBuilder errors) {
     String		result;
     SVGGraphics2D 	g;
-    int			cx;
-    int			cy;
-    int			dx;
-    int			dy;
-    int			cycle;
-    int			flip;
-    int			w;
-    int			h;
-    int			m;
-    String 		measure;
-    double[]		tc;
-    double[]		a;
-    double[]		b;
-    double[]		c;
-    double		currentAngle;
 
     g = new SVGGraphics2D(m_Width, m_Height);
-
-    // background
-    g.setColor(m_Background);
-    g.fillRect(0, 0, m_Width, m_Height);
-
-    // center of image
-    cx = m_Width / 2;
-    cy = m_Height / 2;
-
-    // draw triangles
-    for (m = 0; m < MEASURES.length; m++) {
-      measure = MEASURES[m];
-      g.setColor(adjustOpacity(m_Colors.get(measure)));
-      currentAngle = angle * m;
-      w = (int) Math.round(m_Width * (1.0 - 2*m_Margin) * (test.get(measure).get(0) / (5.0 * 2)));  // score (1 score unit = 10 percentile units)
-      h = (int) Math.round(m_Height * (1.0 - 2*m_Margin) * (test.get(measure).get(1) / 100.0));  // percentile
-      if (m_Verbose)
-	m_Logger.info(measure + " - triangle dimensions: w=" + w + ", h=" + h);
-      tc = m_Center.calculate(w, h);
-      if (m_Verbose)
-	m_Logger.info(measure + " - triangle center: " + tc[0] + "/" + tc[1]);
-      for (cycle = 0; cycle < overallFlipCycles; cycle++) {
-	for (flip = 0; flip < numFlips.get(measure); flip++) {
-	  dx = (int) (cx - tc[0]);
-	  dy = (int) (cy - tc[1]);
-	  a  = rotate(new double[]{0, h}, tc, currentAngle);
-	  b  = rotate(new double[]{w, 0}, tc, currentAngle);
-	  c  = rotate(new double[]{w, h}, tc, currentAngle);
-	  g.fillPolygon(
-	    new int[]{(int) a[0] + dx, (int) b[0] + dx, (int) c[0] + dx},
-	    new int[]{adjustY((int) a[1] + dy), adjustY((int) b[1] + dy), adjustY((int) c[1] + dy)},
-	    3);
-	  currentAngle += angle;
-	  if (m_OnlyFirstIteration)
-	    break;
-	}
-	if (m_OnlyFirstIteration)
-	  break;
-      }
-    }
-
+    draw(g, test, angle, numFlips, overallFlipCycles, errors);
     result = g.getSVGDocument();
-
-    // clean up
     g.dispose();
 
     return result;
