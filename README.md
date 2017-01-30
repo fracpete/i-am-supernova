@@ -1,6 +1,7 @@
 # I am supernova
 
-*I am supernova* is an artistic visualization of *The Big Five Personality Test*, 
+*I am supernova* is an artistic visualization of 
+[The Big Five Personality Test](https://en.wikipedia.org/wiki/Big_Five_personality_traits), 
 devised by [Keith Soo](http://www.cms.waikato.ac.nz/people/ceks).
 
 ## Output formats
