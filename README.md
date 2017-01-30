@@ -7,8 +7,9 @@ devised by [Keith Soo](http://www.cms.waikato.ac.nz/people/ceks).
 ## Output formats
 Currently available output formats:
 
-* PNG
 * PDF
+* PNG
+* SVG
 
 
 ## User interface
