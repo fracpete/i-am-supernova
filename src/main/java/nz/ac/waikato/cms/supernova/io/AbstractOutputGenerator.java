@@ -66,6 +66,9 @@ public abstract class AbstractOutputGenerator<T> {
   /** verbose flag. */
   protected boolean m_Verbose;
 
+  /** whether to only output the first lot of triangles. */
+  protected boolean m_OnlyFirstIteration;
+
   /** the colors to use. */
   protected Map<String,Color> m_Colors;
 
@@ -94,13 +97,14 @@ public abstract class AbstractOutputGenerator<T> {
    * For initializing the members.
    */
   protected void initialize() {
-    m_Logger     = Logger.getLogger(getClass().getName());
-    m_Verbose    = false;
-    m_Opacity    = 0.1;
-    m_Margin     = 0.1;
-    m_Background = Color.BLACK;
-    m_Center     = new Incenter();
-    m_Colors     = getDefaultColors();
+    m_Logger             = Logger.getLogger(getClass().getName());
+    m_Verbose            = false;
+    m_Opacity            = 0.1;
+    m_Margin             = 0.1;
+    m_Background         = Color.BLACK;
+    m_Center             = new Incenter();
+    m_Colors             = getDefaultColors();
+    m_OnlyFirstIteration = false;
   }
 
   /**
@@ -119,6 +123,24 @@ public abstract class AbstractOutputGenerator<T> {
    */
   public boolean getVerbose() {
     return m_Verbose;
+  }
+
+  /**
+   * Sets whether to only perform first iteration.
+   *
+   * @param value	true if only 1st iteration
+   */
+  public void setOnlyFirstIteration(boolean value) {
+    m_OnlyFirstIteration = value;
+  }
+
+  /**
+   * Returns whether to only perform first iteration.
+   *
+   * @return		true if only 1st iteration
+   */
+  public boolean getOnlyFirstIteration() {
+    return m_OnlyFirstIteration;
   }
 
   /**

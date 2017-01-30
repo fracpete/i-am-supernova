@@ -151,7 +151,11 @@ public class PNG
 	    new int[]{adjustY((int) a[1] + dy), adjustY((int) b[1] + dy), adjustY((int) c[1] + dy)},
 	    3);
 	  currentAngle += angle;
+	  if (m_OnlyFirstIteration)
+	    break;
 	}
+	if (m_OnlyFirstIteration)
+	  break;
       }
     }
 
