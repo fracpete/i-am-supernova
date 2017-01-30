@@ -21,13 +21,49 @@
 package nz.ac.waikato.cms.supernova.gui;
 
 import com.googlecode.jfilechooserbookmarks.gui.BasePanel;
-import nz.ac.waikato.cms.gui.core.BaseDirectoryChooser;
-import nz.ac.waikato.cms.gui.core.BaseFileChooser;
+import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
 import nz.ac.waikato.cms.gui.core.BaseFrame;
-import nz.ac.waikato.cms.gui.core.ExtensionFileFilter;
+import nz.ac.waikato.cms.gui.core.DirectoryChooserPanel;
+import nz.ac.waikato.cms.gui.core.FileChooserPanel;
+import nz.ac.waikato.cms.gui.core.GUIHelper;
+import nz.ac.waikato.cms.supernova.Registry;
+import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
+import nz.ac.waikato.cms.supernova.io.AbstractPixelBasedOutputGenerator;
+import nz.ac.waikato.cms.supernova.io.PNG;
+import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
+import nz.ac.waikato.cms.supernova.triangle.Incenter;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingWorker;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Interface for I Am Supernova.
@@ -38,48 +74,102 @@ import java.awt.BorderLayout;
 public class Supernova
   extends BasePanel {
 
+  /** for logging. */
+  protected Logger m_Logger;
+
   /** tabbed pane. */
   protected JTabbedPane m_TabbedPane;
 
   /** the panel for generating a single graph. */
   protected BasePanel m_PanelSingle;
 
+  /** the preview of the generated image. */
+  protected ImagePanel m_PanelSinglePreview;
+
+  /** the table for the statistics. */
+  protected StatisticsTable m_SingleStatistics;
+
+  /** the background. */
+  protected ColorButton m_SingleBackground;
+
+  /** the opacity. */
+  protected JSpinner m_SingleOpacity;
+
+  /** the margin. */
+  protected JSpinner m_SingleMargin;
+
+  /** the width. */
+  protected JSpinner m_SingleWidth;
+
+  /** the height. */
+  protected JSpinner m_SingleHeight;
+
+  /** the generator. */
+  protected JComboBox m_SingleGenerator;
+
+  /** the center. */
+  protected JComboBox m_SingleCenter;
+
+  /** the output. */
+  protected FileChooserPanel m_SingleOutput;
+
+  /** generates the preview. */
+  protected JButton m_SinglePreview;
+
+  /** generates the output. */
+  protected JButton m_SingleGenerate;
+
   /** the panel for batch processing. */
   protected BasePanel m_PanelBatch;
 
-  /** the filechooser for csv files. */
-  protected BaseFileChooser m_FileChooserCSV;
+  /** the log for batch processing. */
+  protected JTextArea m_BatchLog;
 
-  /** the filechooser for saving plots. */
-  protected BaseFileChooser m_FileChooserPlots;
+  /** the table for the statistics. */
+  protected ColorTable m_BatchColors;
 
-  /** the directory chooser for the output directory. */
-  protected BaseDirectoryChooser m_DirChooserOutput;
+  /** the background. */
+  protected ColorButton m_BatchBackground;
+
+  /** the opacity. */
+  protected JSpinner m_BatchOpacity;
+
+  /** the margin. */
+  protected JSpinner m_BatchMargin;
+
+  /** the width. */
+  protected JSpinner m_BatchWidth;
+
+  /** the height. */
+  protected JSpinner m_BatchHeight;
+
+  /** the generator. */
+  protected JComboBox m_BatchGenerator;
+
+  /** the center. */
+  protected JComboBox m_BatchCenter;
+
+  /** the CSV file. */
+  protected FileChooserPanel m_BatchCSV;
+
+  /** the output. */
+  protected DirectoryChooserPanel m_BatchOutput;
+
+  /** generates the output. */
+  protected JButton m_BatchGenerate;
+
+  /** the collected labels to be adjusted. */
+  protected List<JLabel> m_ParamLabels;
 
   /**
-   * Initializes the members.
+   * Initializes the widgets.
    */
   @Override
   protected void initialize() {
-    ExtensionFileFilter		filter;
-    
     super.initialize();
-    
-    m_FileChooserCSV = new BaseFileChooser();
-    filter = new ExtensionFileFilter("CSV files", "csv");
-    m_FileChooserCSV.addChoosableFileFilter(filter);
-    m_FileChooserCSV.setFileFilter(filter);
-    m_FileChooserCSV.setAcceptAllFileFilterUsed(false);
-    m_FileChooserCSV.setFileSelectionMode(BaseFileChooser.FILES_ONLY);
-    
-    m_FileChooserPlots = new BaseFileChooser();
-    filter = new ExtensionFileFilter("PNG file", "png");
-    m_FileChooserPlots.addChoosableFileFilter(filter);
-    m_FileChooserPlots.setFileFilter(filter);
-    m_FileChooserPlots.setAcceptAllFileFilterUsed(false);
-    m_FileChooserPlots.setFileSelectionMode(BaseFileChooser.FILES_ONLY);
 
-    m_DirChooserOutput = new BaseDirectoryChooser();
+    m_ParamLabels = new ArrayList<>();
+    m_Logger      = Logger.getLogger(getClass().getName());
   }
 
   /**
@@ -91,16 +181,441 @@ public class Supernova
 
     setLayout(new BorderLayout());
 
-    // single
-    m_PanelSingle = new BasePanel(new BorderLayout());
+    m_ParamLabels.clear();
+    m_PanelSingle = createSinglePanel();
 
-    // batch
-    m_PanelBatch = new BasePanel(new BorderLayout());
+    m_ParamLabels.clear();
+    m_PanelBatch = createBatchPanel();
 
     m_TabbedPane = new JTabbedPane();
     m_TabbedPane.addTab("Graph", m_PanelSingle);
     m_TabbedPane.addTab("Batch", m_PanelBatch);
     add(m_TabbedPane);
+  }
+
+  /**
+   * Creates a panel with a parameter.
+   *
+   * @param labelText	the label text
+   * @param comp	the component
+   * @return		the panel
+   */
+  protected JPanel createParameter(String labelText, JComponent comp) {
+    JPanel	param;
+    JLabel	label;
+
+    label = new JLabel(labelText);
+    label.setLabelFor(comp);
+    param = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    param.add(label);
+    param.add(comp);
+    m_ParamLabels.add(label);
+
+    return param;
+  }
+
+  /**
+   * Adjusts the collected labels.
+   */
+  protected void adjustLabels() {
+    int		max;
+
+    max = 0;
+    for (JLabel label: m_ParamLabels)
+      max = (int) Math.max(label.getPreferredSize().getWidth(), max);
+
+    for (JLabel label: m_ParamLabels)
+      label.setPreferredSize(new Dimension(max, (int) label.getPreferredSize().getHeight()));
+  }
+
+  /**
+   * Creates the panel for generating a single graph.
+   *
+   * @return		the panel
+   */
+  protected BasePanel createSinglePanel() {
+    BasePanel 	result;
+    JPanel	params;
+    JPanel 	left1;
+    JPanel 	left2;
+    JPanel	panel;
+
+    result = new BasePanel(new BorderLayout());
+    m_PanelSinglePreview = new ImagePanel();
+    result.add(new BaseScrollPane(m_PanelSinglePreview), BorderLayout.CENTER);
+
+    left1 = new JPanel(new BorderLayout());
+    result.add(left1, BorderLayout.WEST);
+
+    // params with height 2
+    params = new JPanel(new GridLayout(0, 1));
+    left1.add(params, BorderLayout.NORTH);
+
+    m_SingleStatistics = new StatisticsTable();
+    left1.add(new BaseScrollPane(m_SingleStatistics), BorderLayout.NORTH);
+
+    // params with height 1
+    panel = new JPanel(new BorderLayout());
+    left1.add(panel, BorderLayout.CENTER);
+    left2 = new JPanel(new BorderLayout());
+    panel.add(left2, BorderLayout.NORTH);
+    params = new JPanel(new GridLayout(0, 1));
+    left2.add(params, BorderLayout.NORTH);
+
+    // background
+    m_SingleBackground = new ColorButton(Color.BLACK);
+    params.add(createParameter("Background", m_SingleBackground));
+
+    // opacity
+    m_SingleOpacity = new JSpinner();
+    m_SingleOpacity.setValue(10);
+    ((SpinnerNumberModel) m_SingleOpacity.getModel()).setMinimum(0);
+    ((SpinnerNumberModel) m_SingleOpacity.getModel()).setMaximum(100);
+    ((SpinnerNumberModel) m_SingleOpacity.getModel()).setStepSize(10);
+    ((JSpinner.DefaultEditor) m_SingleOpacity.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Opacity %", m_SingleOpacity));
+
+    // margin
+    m_SingleMargin = new JSpinner();
+    m_SingleMargin.setValue(20);
+    ((SpinnerNumberModel) m_SingleMargin.getModel()).setMinimum(0);
+    ((SpinnerNumberModel) m_SingleMargin.getModel()).setMaximum(100);
+    ((SpinnerNumberModel) m_SingleMargin.getModel()).setStepSize(10);
+    ((JSpinner.DefaultEditor) m_SingleMargin.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Margin %", m_SingleMargin));
+
+    // width
+    m_SingleWidth = new JSpinner();
+    m_SingleWidth.setValue(400);
+    ((SpinnerNumberModel) m_SingleWidth.getModel()).setMinimum(1);
+    ((SpinnerNumberModel) m_SingleWidth.getModel()).setStepSize(100);
+    ((JSpinner.DefaultEditor) m_SingleWidth.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Width", m_SingleWidth));
+
+    // height
+    m_SingleHeight = new JSpinner();
+    m_SingleHeight.setValue(400);
+    ((SpinnerNumberModel) m_SingleHeight.getModel()).setMinimum(1);
+    ((SpinnerNumberModel) m_SingleHeight.getModel()).setStepSize(100);
+    ((JSpinner.DefaultEditor) m_SingleHeight.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Height", m_SingleHeight));
+
+    // generator
+    m_SingleGenerator = new JComboBox<>(Registry.toStringArray(Registry.GENERATORS, true));
+    params.add(createParameter("Generator", m_SingleGenerator));
+
+    // center
+    m_SingleCenter = new JComboBox<>(Registry.toStringArray(Registry.CENTERS, true));
+    params.add(createParameter("Center", m_SingleCenter));
+
+    // output
+    m_SingleOutput = new FileChooserPanel();
+    m_SingleOutput.setPreferredSize(new Dimension(170, (int) m_SingleOutput.getPreferredSize().getHeight()));
+    params.add(createParameter("Output", m_SingleOutput));
+
+    // preview/generate
+    panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    m_SinglePreview = new JButton("Preview");
+    m_SinglePreview.addActionListener((ActionEvent e) -> generateSinglePreview());
+    m_SingleGenerate = new JButton("Generate");
+    m_SingleGenerate.addActionListener((ActionEvent e) -> generateSingleOutput());
+    panel.add(m_SinglePreview);
+    panel.add(m_SingleGenerate);
+    params.add(panel);
+
+    adjustLabels();
+
+    return result;
+  }
+
+  /**
+   * Creates the panel for batch generation.
+   *
+   * @return		the panel
+   */
+  protected BasePanel createBatchPanel() {
+    BasePanel 	result;
+    JPanel	params;
+    JPanel 	left1;
+    JPanel 	left2;
+    JPanel	panel;
+
+    result = new BasePanel(new BorderLayout());
+    m_BatchLog = new JTextArea(20, 40);
+    m_BatchLog.setFont(Font.decode("Monospaced-PLAIN-12"));
+    result.add(new BaseScrollPane(m_BatchLog), BorderLayout.CENTER);
+
+    left1 = new JPanel(new BorderLayout());
+    result.add(left1, BorderLayout.WEST);
+
+    // params with height 2
+    params = new JPanel(new GridLayout(0, 1));
+    left1.add(params, BorderLayout.NORTH);
+
+    m_BatchColors = new ColorTable();
+    left1.add(new BaseScrollPane(m_BatchColors), BorderLayout.NORTH);
+
+    // params with height 1
+    panel = new JPanel(new BorderLayout());
+    left1.add(panel, BorderLayout.CENTER);
+    left2 = new JPanel(new BorderLayout());
+    panel.add(left2, BorderLayout.NORTH);
+    params = new JPanel(new GridLayout(0, 1));
+    left2.add(params, BorderLayout.NORTH);
+
+    // background
+    m_BatchBackground = new ColorButton(Color.BLACK);
+    params.add(createParameter("Background", m_BatchBackground));
+
+    // opacity
+    m_BatchOpacity = new JSpinner();
+    m_BatchOpacity.setValue(10);
+    ((SpinnerNumberModel) m_BatchOpacity.getModel()).setMinimum(0);
+    ((SpinnerNumberModel) m_BatchOpacity.getModel()).setMaximum(100);
+    ((SpinnerNumberModel) m_BatchOpacity.getModel()).setStepSize(10);
+    ((JSpinner.DefaultEditor) m_BatchOpacity.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Opacity %", m_BatchOpacity));
+
+    // margin
+    m_BatchMargin = new JSpinner();
+    m_BatchMargin.setValue(20);
+    ((SpinnerNumberModel) m_BatchMargin.getModel()).setMinimum(0);
+    ((SpinnerNumberModel) m_BatchMargin.getModel()).setMaximum(100);
+    ((SpinnerNumberModel) m_BatchMargin.getModel()).setStepSize(10);
+    ((JSpinner.DefaultEditor) m_BatchMargin.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Margin %", m_BatchMargin));
+
+    // width
+    m_BatchWidth = new JSpinner();
+    m_BatchWidth.setValue(400);
+    ((SpinnerNumberModel) m_BatchWidth.getModel()).setMinimum(1);
+    ((SpinnerNumberModel) m_BatchWidth.getModel()).setStepSize(100);
+    ((JSpinner.DefaultEditor) m_BatchWidth.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Width", m_BatchWidth));
+
+    // height
+    m_BatchHeight = new JSpinner();
+    m_BatchHeight.setValue(400);
+    ((SpinnerNumberModel) m_BatchHeight.getModel()).setMinimum(1);
+    ((SpinnerNumberModel) m_BatchHeight.getModel()).setStepSize(100);
+    ((JSpinner.DefaultEditor) m_BatchHeight.getEditor()).getTextField().setColumns(5);
+    params.add(createParameter("Height", m_BatchHeight));
+
+    // generator
+    m_BatchGenerator = new JComboBox<>(Registry.toStringArray(Registry.GENERATORS, true));
+    params.add(createParameter("Generator", m_BatchGenerator));
+
+    // center
+    m_BatchCenter = new JComboBox<>(Registry.toStringArray(Registry.CENTERS, true));
+    params.add(createParameter("Center", m_BatchCenter));
+
+    // csv
+    m_BatchCSV = new FileChooserPanel();
+    m_BatchCSV.setPreferredSize(new Dimension(170, (int) m_BatchCSV.getPreferredSize().getHeight()));
+    params.add(createParameter("CSV", m_BatchCSV));
+
+    // output
+    m_BatchOutput = new DirectoryChooserPanel();
+    m_BatchOutput.setPreferredSize(new Dimension(170, (int) m_BatchOutput.getPreferredSize().getHeight()));
+    params.add(createParameter("Output", m_BatchOutput));
+
+    // generate
+    panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    m_BatchGenerate = new JButton("Generate");
+    m_BatchGenerate.addActionListener((ActionEvent e) -> {
+      SwingWorker worker = new SwingWorker() {
+	@Override
+	protected Object doInBackground() throws Exception {
+	  generateBatchOutput();
+	  return null;
+	}
+      };
+      worker.execute();
+    });
+    panel.add(m_BatchGenerate);
+    params.add(panel);
+
+    adjustLabels();
+
+    return result;
+  }
+
+  /**
+   * Updates the generator with the values from the "single" tab.
+   *
+   * @param generator	the generator to update
+   */
+  protected void configureSingle(AbstractOutputGenerator generator) {
+    String				cls;
+    AbstractPixelBasedOutputGenerator	pixel;
+
+    generator.setColors(m_SingleStatistics.getColors());
+    generator.setBackground(m_SingleBackground.getColor());
+    generator.setOpacity(((Number) m_SingleOpacity.getValue()).doubleValue() / 100.0);
+    generator.setMargin(((Number) m_SingleMargin.getValue()).doubleValue() / 100.0);
+    if (generator instanceof AbstractPixelBasedOutputGenerator) {
+      pixel = (AbstractPixelBasedOutputGenerator) generator;
+      pixel.setWidth(((Number) m_SingleWidth.getValue()).intValue());
+      pixel.setHeight(((Number) m_SingleHeight.getValue()).intValue());
+    }
+    try {
+      cls = AbstractTriangleCenterCalculation.class.getPackage().getName() + "." + m_SingleCenter.getSelectedItem();
+      generator.setCenter((AbstractTriangleCenterCalculation) Class.forName(cls).newInstance());
+    }
+    catch (Exception e) {
+      generator.setCenter(new Incenter());
+    }
+  }
+
+  /**
+   * Updates the generator with the values from the "batch" tab.
+   *
+   * @param generator	the generator to update
+   */
+  protected void configureBatch(AbstractOutputGenerator generator) {
+    String				cls;
+    AbstractPixelBasedOutputGenerator	pixel;
+
+    generator.setColors(m_BatchColors.getColors());
+    generator.setBackground(m_BatchBackground.getColor());
+    generator.setOpacity(((Number) m_BatchOpacity.getValue()).doubleValue() / 100.0);
+    generator.setMargin(((Number) m_BatchMargin.getValue()).doubleValue() / 100.0);
+    if (generator instanceof AbstractPixelBasedOutputGenerator) {
+      pixel = (AbstractPixelBasedOutputGenerator) generator;
+      pixel.setWidth(((Number) m_BatchWidth.getValue()).intValue());
+      pixel.setHeight(((Number) m_BatchHeight.getValue()).intValue());
+    }
+    try {
+      cls = AbstractTriangleCenterCalculation.class.getPackage().getName() + "." + m_BatchCenter.getSelectedItem();
+      generator.setCenter((AbstractTriangleCenterCalculation) Class.forName(cls).newInstance());
+    }
+    catch (Exception e) {
+      generator.setCenter(new Incenter());
+    }
+  }
+
+  /**
+   * Updates the preview of the "single" tab.
+   */
+  protected void generateSinglePreview() {
+    PNG			generator;
+    BufferedImage	img;
+    StringBuilder	errors;
+
+    errors    = new StringBuilder();
+    generator = new PNG();
+    configureSingle(generator);
+    img = generator.generatePlot(m_SingleStatistics.getStatistics(), errors);
+    if (errors.length() == 0)
+      m_PanelSinglePreview.setImage(img);
+  }
+
+  /**
+   * Generates the output of the "single" tab.
+   */
+  protected void generateSingleOutput() {
+    String			cls;
+    AbstractOutputGenerator	generator;
+    String			msg;
+
+    try {
+      cls = AbstractOutputGenerator.class.getPackage().getName() + "." + m_SingleGenerator.getSelectedItem();
+      generator = (AbstractOutputGenerator) Class.forName(cls).newInstance();
+    }
+    catch (Exception e) {
+      m_Logger.log(Level.SEVERE, "Failed to instantiate output generator - falling back on PNG", e);
+      generator = new PNG();
+    }
+    configureSingle(generator);
+    msg = generator.generate(m_SingleStatistics.getStatistics(), m_SingleOutput.getCurrent());
+    if (msg != null)
+      GUIHelper.showErrorMessage(this, "Failed to generate output:\n" + msg);
+  }
+
+  /**
+   * Generates the output of the "batch" tab.
+   */
+  protected void generateBatchOutput() {
+    String			cls;
+    AbstractOutputGenerator	generator;
+    int 			colID;
+    int 			colMeasure;
+    int 			colScore;
+    int 			colPercentile;
+    Reader 			reader;
+    CSVParser 			csvparser;
+    String 			oldID;
+    Map<String,List<Double>> 	test;
+    String 			id;
+    File 			outfile;
+    String 			msg;
+    String 			measure;
+    double 			score;
+    double 			percentile;
+    String			error;
+
+    m_BatchLog.setText("");
+
+    try {
+      cls = AbstractOutputGenerator.class.getPackage().getName() + "." + m_SingleGenerator.getSelectedItem();
+      generator = (AbstractOutputGenerator) Class.forName(cls).newInstance();
+    }
+    catch (Exception e) {
+      m_Logger.log(Level.SEVERE, "Failed to instantiate output generator - falling back on PNG", e);
+      generator = new PNG();
+    }
+
+    try {
+      colID         = 0;
+      colMeasure    = 1;
+      colScore      = 2;
+      colPercentile = 3;
+      reader        = new FileReader(m_BatchCSV.getCurrent());
+      csvparser     = new CSVParser(reader, CSVFormat.EXCEL.withHeader());
+      oldID         = "";
+      test          = new HashMap<>();
+      for (CSVRecord rec : csvparser) {
+	if (rec.size() < 4)
+	  continue;
+	id = rec.get(colID);
+	if (!id.equals(oldID)) {
+	  if (!test.isEmpty()) {
+	    outfile = new File(m_BatchOutput.getCurrent() + File.separator + oldID + "." + generator.getExtension());
+	    msg     = generator.generate(test, outfile);
+	    if (msg != null) {
+	      error = "Failed to generate output for ID: " + oldID;
+	      m_Logger.severe(error);
+	      m_BatchLog.append(error + "\n");
+	    }
+	    else {
+	      m_BatchLog.append(outfile + "\n");
+	    }
+	  }
+	  test.clear();
+	  oldID = id;
+	}
+	measure    = rec.get(colMeasure);
+	score      = Double.parseDouble(rec.get(colScore));
+	percentile = Double.parseDouble(rec.get(colPercentile));
+	test.put(measure, new ArrayList<>(Arrays.asList(new Double[]{score, percentile})));
+      }
+      if (!test.isEmpty()) {
+	outfile = new File(m_BatchOutput.getCurrent() + File.separator + oldID + "." + generator.getExtension());
+	msg     = generator.generate(test, outfile);
+	if (msg != null) {
+	  error = "Failed to generate output for ID: " + oldID;
+	  m_Logger.severe(error);
+	  m_BatchLog.append(error + "\n");
+	}
+	else {
+	  m_BatchLog.append(outfile + "\n");
+	}
+      }
+    }
+    catch (Exception e) {
+      m_Logger.log(Level.SEVERE, "Failed to generate output!", e);
+      m_BatchLog.append("Failed to generate output: " + e);
+    }
   }
 
   /**
