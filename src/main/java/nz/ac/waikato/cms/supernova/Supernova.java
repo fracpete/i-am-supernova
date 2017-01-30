@@ -27,7 +27,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.internal.HelpScreenException;
 import nz.ac.waikato.cms.supernova.gui.ColorHelper;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
-import nz.ac.waikato.cms.supernova.io.AbstractPixelBasedOutputGenerator;
+import nz.ac.waikato.cms.supernova.io.AbstractOutputGeneratorWithDimensions;
 import nz.ac.waikato.cms.supernova.io.PNG;
 import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
 import nz.ac.waikato.cms.supernova.triangle.Incenter;
@@ -279,8 +279,8 @@ public class Supernova {
     generator.setOpacity(namespace.getDouble(OPACITY));
     generator.setMargin(namespace.getDouble(MARGIN));
     generator.setCenter((AbstractTriangleCenterCalculation) Class.forName(centerCls).newInstance());
-    if (generator instanceof AbstractPixelBasedOutputGenerator) {
-      AbstractPixelBasedOutputGenerator pixel = (AbstractPixelBasedOutputGenerator) generator;
+    if (generator instanceof AbstractOutputGeneratorWithDimensions) {
+      AbstractOutputGeneratorWithDimensions pixel = (AbstractOutputGeneratorWithDimensions) generator;
       pixel.setWidth(namespace.getInt(WIDTH));
       pixel.setHeight(namespace.getInt(HEIGHT));
     }

@@ -34,7 +34,7 @@ import java.util.Map;
  * @version $Revision$
  */
 public class PNG
-  extends AbstractPixelBasedOutputGenerator<BufferedImage> {
+  extends AbstractOutputGeneratorWithDimensions<BufferedImage> {
 
   /**
    * Returns the default extension to use.

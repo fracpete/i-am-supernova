@@ -14,7 +14,7 @@
  */
 
 /**
- * AbstractPixelBasedOutputGenerator.java
+ * AbstractOutputGeneratorWithDimensions.java
  * Copyright (C) 2017 University of Waikato, Hamilton, NZ
  */
 
@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Ancestor for output generators that are pixel based.
+ * Ancestor for output generators that support width/height.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$
  * @param <T> the type of the intermediate data structure being generated
  */
-public abstract class AbstractPixelBasedOutputGenerator<T>
+public abstract class AbstractOutputGeneratorWithDimensions<T>
   extends AbstractOutputGenerator<T> {
 
   /** the width. */

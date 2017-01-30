@@ -31,7 +31,7 @@ import nz.ac.waikato.cms.gui.core.FileChooserPanel;
 import nz.ac.waikato.cms.gui.core.GUIHelper;
 import nz.ac.waikato.cms.supernova.Registry;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
-import nz.ac.waikato.cms.supernova.io.AbstractPixelBasedOutputGenerator;
+import nz.ac.waikato.cms.supernova.io.AbstractOutputGeneratorWithDimensions;
 import nz.ac.waikato.cms.supernova.io.PNG;
 import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
 import nz.ac.waikato.cms.supernova.triangle.Incenter;
@@ -519,14 +519,14 @@ public class Supernova
    */
   protected void configureSingle(AbstractOutputGenerator generator) {
     String				cls;
-    AbstractPixelBasedOutputGenerator	pixel;
+    AbstractOutputGeneratorWithDimensions pixel;
 
     generator.setColors(m_SingleStatistics.getColors());
     generator.setBackground(m_SingleBackground.getColor());
     generator.setOpacity(((Number) m_SingleOpacity.getValue()).doubleValue() / 100.0);
     generator.setMargin(((Number) m_SingleMargin.getValue()).doubleValue() / 100.0);
-    if (generator instanceof AbstractPixelBasedOutputGenerator) {
-      pixel = (AbstractPixelBasedOutputGenerator) generator;
+    if (generator instanceof AbstractOutputGeneratorWithDimensions) {
+      pixel = (AbstractOutputGeneratorWithDimensions) generator;
       pixel.setWidth(((Number) m_SingleWidth.getValue()).intValue());
       pixel.setHeight(((Number) m_SingleHeight.getValue()).intValue());
     }
@@ -546,14 +546,14 @@ public class Supernova
    */
   protected void configureBatch(AbstractOutputGenerator generator) {
     String				cls;
-    AbstractPixelBasedOutputGenerator	pixel;
+    AbstractOutputGeneratorWithDimensions pixel;
 
     generator.setColors(m_BatchColors.getColors());
     generator.setBackground(m_BatchBackground.getColor());
     generator.setOpacity(((Number) m_BatchOpacity.getValue()).doubleValue() / 100.0);
     generator.setMargin(((Number) m_BatchMargin.getValue()).doubleValue() / 100.0);
-    if (generator instanceof AbstractPixelBasedOutputGenerator) {
-      pixel = (AbstractPixelBasedOutputGenerator) generator;
+    if (generator instanceof AbstractOutputGeneratorWithDimensions) {
+      pixel = (AbstractOutputGeneratorWithDimensions) generator;
       pixel.setWidth(((Number) m_BatchWidth.getValue()).intValue());
       pixel.setHeight(((Number) m_BatchHeight.getValue()).intValue());
     }
