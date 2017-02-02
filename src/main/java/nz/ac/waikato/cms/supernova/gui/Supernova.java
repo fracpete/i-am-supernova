@@ -20,6 +20,7 @@
 
 package nz.ac.waikato.cms.supernova.gui;
 
+import com.github.fracpete.jclipboardhelper.ClipboardHelper;
 import com.googlecode.jfilechooserbookmarks.core.Utils;
 import com.googlecode.jfilechooserbookmarks.gui.BasePanel;
 import com.googlecode.jfilechooserbookmarks.gui.BaseScrollPane;
@@ -122,6 +123,9 @@ public class Supernova
 
   /** generates the preview. */
   protected JButton m_SinglePreview;
+
+  /** copies the preview. */
+  protected JButton m_SingleCopy;
 
   /** generates the output. */
   protected JButton m_SingleGenerate;
@@ -246,10 +250,19 @@ public class Supernova
     JPanel 	left1;
     JPanel 	left2;
     JPanel	panel;
+    JPanel	panel2;
 
     result = new BasePanel(new BorderLayout());
+    panel = new JPanel(new BorderLayout());
+    result.add(panel, BorderLayout.CENTER);
     m_PanelSinglePreview = new ImagePanel();
-    result.add(new BaseScrollPane(m_PanelSinglePreview), BorderLayout.CENTER);
+    panel.add(new BaseScrollPane(m_PanelSinglePreview), BorderLayout.CENTER);
+    panel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    panel.add(panel2, BorderLayout.SOUTH);
+    m_SingleCopy = new JButton(GUIHelper.getIcon("copy.gif"));
+    m_SingleCopy.setEnabled(false);
+    m_SingleCopy.addActionListener((ActionEvent e) -> copySinglePreview());
+    panel2.add(m_SingleCopy);
 
     left1 = new JPanel(new BorderLayout());
     result.add(left1, BorderLayout.WEST);
@@ -360,6 +373,14 @@ public class Supernova
     catch (Exception ex) {
       m_SingleOutput.removeChoosableFileFilters();
     }
+  }
+
+  /**
+   * Copies the current preview to the clipboard.
+   */
+  protected void copySinglePreview() {
+    if (m_PanelSinglePreview.getImage() != null)
+      ClipboardHelper.copyToClipboard(m_PanelSinglePreview.getImage());
   }
 
   /**
@@ -581,6 +602,7 @@ public class Supernova
     img = generator.generatePlot(m_SingleStatistics.getStatistics(), errors);
     if (errors.length() == 0)
       m_PanelSinglePreview.setImage(img);
+    m_SingleCopy.setEnabled(m_PanelSinglePreview.getImage() != null);
   }
 
   /**
