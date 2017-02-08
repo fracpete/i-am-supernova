@@ -18,12 +18,10 @@
  * Copyright (C) 2017 University of Waikato, Hamilton, NZ
  */
 
-package nz.ac.waikato.cms.supernova;
+package nz.ac.waikato.cms.supernova.core;
 
-import nz.ac.waikato.cms.supernova.io.PDF;
-import nz.ac.waikato.cms.supernova.io.PNG;
-import nz.ac.waikato.cms.supernova.io.SVG;
-import nz.ac.waikato.cms.supernova.triangle.Incenter;
+import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
+import nz.ac.waikato.cms.supernova.triangle.AbstractTriangleCenterCalculation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +34,23 @@ import java.util.List;
  */
 public class Registry {
 
-  /** the available generators. */
-  public static Class[] GENERATORS = new Class[]{
-    PDF.class,
-    PNG.class,
-    SVG.class,
-  };
+  /**
+   * Returns the available output generators.
+   *
+   * @return		the generators
+   */
+  public static Class[] getGenerators() {
+    return SupernovaClassLister.getSingleton().getClasses(AbstractOutputGenerator.class);
+  }
 
-  /** the available triangle center calculations. */
-  public static Class[] CENTERS = new Class[]{
-    Incenter.class,
-  };
+  /**
+   * Returns the available triangle center calculations.
+   *
+   * @return		the centers
+   */
+  public static Class[] getCenters() {
+    return SupernovaClassLister.getSingleton().getClasses(AbstractTriangleCenterCalculation.class);
+  }
 
   /**
    * Turns a class array into a comma-separated string.

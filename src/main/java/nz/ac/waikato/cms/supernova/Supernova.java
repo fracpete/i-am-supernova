@@ -25,6 +25,7 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.internal.HelpScreenException;
+import nz.ac.waikato.cms.supernova.core.Registry;
 import nz.ac.waikato.cms.supernova.gui.ColorHelper;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGeneratorWithDimensions;
@@ -202,7 +203,7 @@ public class Supernova {
       .setDefault(Incenter.class.getName())
       .help(
 	"The name of the algorithm for calculating the center of a triangle.\n"
-	  + "Available: " + Registry.toString(Registry.CENTERS, true));
+	  + "Available: " + Registry.toString(Registry.getCenters(), true));
 
     parser.addArgument("--" + GENERATOR)
       .metavar(GENERATOR)
@@ -210,7 +211,7 @@ public class Supernova {
       .setDefault(PNG.class.getName())
       .help(
 	"The name of the generator class to use.\n"
-	  + "Available: " + Registry.toString(Registry.GENERATORS, true));
+	  + "Available: " + Registry.toString(Registry.getGenerators(), true));
 
     parser.addArgument("--" + OUTPUT)
       .metavar(OUTPUT)

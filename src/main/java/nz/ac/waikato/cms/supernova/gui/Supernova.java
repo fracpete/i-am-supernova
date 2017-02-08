@@ -30,7 +30,7 @@ import nz.ac.waikato.cms.gui.core.DirectoryChooserPanel;
 import nz.ac.waikato.cms.gui.core.ExtensionFileFilter;
 import nz.ac.waikato.cms.gui.core.FileChooserPanel;
 import nz.ac.waikato.cms.gui.core.GUIHelper;
-import nz.ac.waikato.cms.supernova.Registry;
+import nz.ac.waikato.cms.supernova.core.Registry;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGenerator;
 import nz.ac.waikato.cms.supernova.io.AbstractOutputGeneratorWithDimensions;
 import nz.ac.waikato.cms.supernova.io.PNG;
@@ -321,14 +321,14 @@ public class Supernova
     params.add(createParameter("Height", m_SingleHeight));
 
     // generator
-    m_SingleGenerator = new JComboBox<>(Registry.toStringArray(Registry.GENERATORS, true));
+    m_SingleGenerator = new JComboBox<>(Registry.toStringArray(Registry.getGenerators(), true));
     m_SingleGenerator.addActionListener((ActionEvent e) -> {
       updateSingleOutput();
     });
     params.add(createParameter("Generator", m_SingleGenerator));
 
     // center
-    m_SingleCenter = new JComboBox<>(Registry.toStringArray(Registry.CENTERS, true));
+    m_SingleCenter = new JComboBox<>(Registry.toStringArray(Registry.getCenters(), true));
     params.add(createParameter("Center", m_SingleCenter));
 
     // output
@@ -457,11 +457,11 @@ public class Supernova
     params.add(createParameter("Height", m_BatchHeight));
 
     // generator
-    m_BatchGenerator = new JComboBox<>(Registry.toStringArray(Registry.GENERATORS, true));
+    m_BatchGenerator = new JComboBox<>(Registry.toStringArray(Registry.getGenerators(), true));
     params.add(createParameter("Generator", m_BatchGenerator));
 
     // center
-    m_BatchCenter = new JComboBox<>(Registry.toStringArray(Registry.CENTERS, true));
+    m_BatchCenter = new JComboBox<>(Registry.toStringArray(Registry.getCenters(), true));
     params.add(createParameter("Center", m_BatchCenter));
 
     // csv
