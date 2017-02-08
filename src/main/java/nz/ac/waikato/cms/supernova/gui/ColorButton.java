@@ -28,7 +28,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 /**
- * TODO: What class does.
+ * Button that displays the associated color.
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision$

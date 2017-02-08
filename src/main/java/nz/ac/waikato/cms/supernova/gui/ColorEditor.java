@@ -31,11 +31,6 @@
 
 package nz.ac.waikato.cms.supernova.gui;
 
-/* 
- * ColorEditor.java (compiles with releases 1.3 and 1.4) is used by 
- * TableDialogEditDemo.java.
- */
-
 import javax.swing.AbstractCellEditor;
 import javax.swing.table.TableCellEditor;
 import javax.swing.JButton;
@@ -47,6 +42,10 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * ColorEditor.java (compiles with releases 1.3 and 1.4) is used by
+ * TableDialogEditDemo.java.
+ */
 public class ColorEditor extends AbstractCellEditor
   implements TableCellEditor,
   ActionListener {
